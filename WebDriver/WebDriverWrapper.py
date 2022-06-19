@@ -509,7 +509,6 @@ class WebDriverWrapper(object):
 			_min_num = float(min_num)
 		except:
 			_min_num = 0.0
-			pass
 
 		# 入力チェック(max_num)
 		try:
