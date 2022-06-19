@@ -496,22 +496,40 @@ class WebDriverWrapper(object):
 		time.sleep(sec)
 
 	@classmethod
-	# ランダムな時間待機(下限と上限を指定)
-	def wait_random_sec(cls, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False):
+	# ランダムな値を計算(下限と上限を指定)
+	def _calc_random_num(cls, min_num: float = 0.0, max_num: float = 0.0) -> float:
 		import random
 
+		# 格納用変数初期化
+		_min_num: float = 0.0
+		_max_num: float = 0.0
+
+		# 入力チェック(min_num)
+		try:
+			_min_num = float(min_num)
+		except:
+			_min_num = 0.0
+			pass
+
+		# 入力チェック(max_num)
+		try:
+			_max_num = float(max_num)
+		except:
+			_max_num = 0.0
+
 		# 範囲制限
-		_min_sec = float(max(min_sec, 0.0))
-		_max_sec = float(min(max_sec, 100000.0))
+		_min_num = float(max(_min_num, 0.0))
+		_max_num = float(min(_max_num, 100000.0))
 
-		# 逆転チェック
-		if _min_sec > _max_sec:
-			_tmp: float = _min_sec
-			_min_sec = _max_sec
-			_max_sec = _tmp
+		_random_num: float = random.uniform(_min_num, _max_num)
 
+		return _random_num
+
+	@classmethod
+	# ランダムな時間待機(下限と上限を指定)
+	def wait_random_sec(cls, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False):
 		# スリープ時間計算
-		_random_sleep_sec: float = random.uniform(_min_sec, _max_sec)
+		_random_sleep_sec: float = cls._calc_random_num(min_num=min_sec, max_num=max_sec)
 
 		# スリープ
 		cls.wait_sec(sec=_random_sleep_sec, print_sec=print_sec)
