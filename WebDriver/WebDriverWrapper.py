@@ -517,7 +517,7 @@ class WebDriverWrapper(object):
 		cls.wait_sec(sec=_random_sleep_sec, print_sec=print_sec)
 
 	# 読み込み待機 / +αの時間待機
-	def wait_load_and_additional_time(self, min_sec: int = 1, max_sec: int = 3, print_sec: bool = False) -> bool:
+	def wait_load_and_additional_time(self, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
