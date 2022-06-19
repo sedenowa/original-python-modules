@@ -484,29 +484,37 @@ class WebDriverWrapper(object):
 		return _normalized_text
 
 	@classmethod
-	# ランダムな時間待機(下限と上限を指定)
-	def wait_random_sec(cls, min_sec: int = 1, max_sec: int = 3, print_sec: bool = False):
+	# 指定した秒数待機
+	def wait_sec(cls, sec: float = 1.0, print_sec: bool = False):
 		import time
+
+		# スリープ時間表示
+		if print_sec:
+			print("wait " + str(sec) + " second.")
+
+		# スリープ
+		time.sleep(sec)
+
+	@classmethod
+	# ランダムな時間待機(下限と上限を指定)
+	def wait_random_sec(cls, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False):
 		import random
+
 		# 範囲制限
-		_min_sec = max(min_sec, 0)
-		_max_sec = min(max_sec, 100000)
+		_min_sec = float(max(min_sec, 0.0))
+		_max_sec = float(min(max_sec, 100000.0))
 
 		# 逆転チェック
 		if _min_sec > _max_sec:
-			_tmp = _min_sec
+			_tmp: float = _min_sec
 			_min_sec = _max_sec
 			_max_sec = _tmp
 
 		# スリープ時間計算
-		_random_sleep_sec = random.uniform(_min_sec, _max_sec)
-
-		# スリープ時間表示
-		if print_sec:
-			print("wait " + str(_random_sleep_sec) + " second.")
+		_random_sleep_sec: float = random.uniform(_min_sec, _max_sec)
 
 		# スリープ
-		time.sleep(_random_sleep_sec)
+		cls.wait_sec(sec=_random_sleep_sec, print_sec=print_sec)
 
 	# 読み込み待機 / +αの時間待機
 	def wait_load_and_additional_time(self, min_sec: int = 1, max_sec: int = 3, print_sec: bool = False) -> bool:
