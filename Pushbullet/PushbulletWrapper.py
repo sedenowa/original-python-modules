@@ -57,12 +57,12 @@ class PushbulletWrapper(Pushbullet):
 			title: str,
 			body: str,
 			# 以下オプション
-			only_target: bool = True,
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
 			channel: Optional[str] = None,
-			# 独自
+			# 独自追加
+			only_target: bool = True,
 			catch_exception: bool = False,
 			output_trace: bool = True
 	):
@@ -116,13 +116,13 @@ class PushbulletWrapper(Pushbullet):
 			title: str,
 			url: str,
 			# 以下オプション
-			only_target: bool = True,
 			body: Optional[str] = None,
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
 			channel: Optional[str] = None,
-			# 独自
+			# 独自追加
+			only_target: bool = True,
 			catch_exception: bool = False,
 			output_trace: bool = True
 	):
@@ -179,14 +179,14 @@ class PushbulletWrapper(Pushbullet):
 			file_url: str,
 			file_type: str,
 			# 以下オプション
-			only_target: bool = True,
 			body: Optional[str] = None,
 			title: Optional[str] = None,
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
 			channel: Optional[str] = None,
-			# 独自
+			# 独自追加
+			only_target: bool = True,
 			catch_exception: bool = False,
 			output_trace: bool = True
 	):
