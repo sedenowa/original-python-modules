@@ -61,29 +61,54 @@ class PushbulletWrapper(Pushbullet):
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
-			channel: Optional[str] = None
+			channel: Optional[str] = None,
+			# 独自
+			catch_exception: bool = False,
+			output_trace: bool = True
 	):
 		if only_target and len(self.target_devices) > 0:
 			# 抽出したデバイスにのみ送信
 			for _target_device in self.target_devices:
+				try:
+					super().push_note(
+						title=title,
+						body=body,
+						device=_target_device,
+						chat=chat,
+						email=email,
+						channel=channel
+					)
+				except Exception as e:
+					if catch_exception:
+						# 例外をcatchする場合
+						if output_trace:
+							# トレースを出力
+							import traceback
+							traceback.print_exc()
+					else:
+						# 例外をcatchしない場合はそのままraise
+						raise e
+		else:
+			# 全デバイスに送信
+			try:
 				super().push_note(
 					title=title,
 					body=body,
-					device=_target_device,
+					device=device,
 					chat=chat,
 					email=email,
 					channel=channel
 				)
-		else:
-			# 全デバイスに送信
-			super().push_note(
-				title=title,
-				body=body,
-				device=device,
-				chat=chat,
-				email=email,
-				channel=channel
-			)
+			except Exception as e:
+				if catch_exception:
+					# 例外をcatchする場合
+					if output_trace:
+						# トレースを出力
+						import traceback
+						traceback.print_exc()
+				else:
+					# 例外をcatchしない場合はそのままraise
+					raise e
 
 	# メソッド拡張(push_link)
 	def push_link(
@@ -96,31 +121,56 @@ class PushbulletWrapper(Pushbullet):
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
-			channel: Optional[str] = None
+			channel: Optional[str] = None,
+			# 独自
+			catch_exception: bool = False,
+			output_trace: bool = True
 	):
 		if only_target and len(self.target_devices) > 0:
 			# 抽出したデバイスにのみ送信
 			for _target_device in self.target_devices:
+				try:
+					super().push_link(
+						title=title,
+						url=url,
+						body=body,
+						device=_target_device,
+						chat=chat,
+						email=email,
+						channel=channel
+					)
+				except Exception as e:
+					if catch_exception:
+						# 例外をcatchする場合
+						if output_trace:
+							# トレースを出力
+							import traceback
+							traceback.print_exc()
+					else:
+						# 例外をcatchしない場合はそのままraise
+						raise e
+		else:
+			try:
+				# 全デバイスに送信
 				super().push_link(
 					title=title,
 					url=url,
 					body=body,
-					device=_target_device,
+					device=device,
 					chat=chat,
 					email=email,
 					channel=channel
 				)
-		else:
-			# 全デバイスに送信
-			super().push_link(
-				title=title,
-				url=url,
-				body=body,
-				device=device,
-				chat=chat,
-				email=email,
-				channel=channel
-			)
+			except Exception as e:
+				if catch_exception:
+					# 例外をcatchする場合
+					if output_trace:
+						# トレースを出力
+						import traceback
+						traceback.print_exc()
+				else:
+					# 例外をcatchしない場合はそのままraise
+					raise e
 
 	# メソッド拡張(push_file)
 	def push_file(
@@ -135,32 +185,57 @@ class PushbulletWrapper(Pushbullet):
 			device: Optional[Device] = None,
 			chat: Optional[str] = None,
 			email: Optional[str] = None,
-			channel: Optional[str] = None
+			channel: Optional[str] = None,
+			# 独自
+			catch_exception: bool = False,
+			output_trace: bool = True
 	):
 		if only_target and len(self.target_devices) > 0:
 			# 抽出したデバイスにのみ送信
 			for _target_device in self.target_devices:
+				try:
+					super().push_file(
+						file_name=file_name,
+						file_url=file_url,
+						file_type=file_type,
+						body=body,
+						title=title,
+						device=_target_device,
+						chat=chat,
+						email=email,
+						channel=channel
+					)
+				except Exception as e:
+					if catch_exception:
+						# 例外をcatchする場合
+						if output_trace:
+							# トレースを出力
+							import traceback
+							traceback.print_exc()
+					else:
+						# 例外をcatchしない場合はそのままraise
+						raise e
+		else:
+			try:
+				# 全デバイスに送信
 				super().push_file(
 					file_name=file_name,
 					file_url=file_url,
 					file_type=file_type,
 					body=body,
 					title=title,
-					device=_target_device,
+					device=device,
 					chat=chat,
 					email=email,
 					channel=channel
 				)
-		else:
-			# 全デバイスに送信
-			super().push_file(
-				file_name=file_name,
-				file_url=file_url,
-				file_type=file_type,
-				body=body,
-				title=title,
-				device=device,
-				chat=chat,
-				email=email,
-				channel=channel
-			)
+			except Exception as e:
+				if catch_exception:
+					# 例外をcatchする場合
+					if output_trace:
+						# トレースを出力
+						import traceback
+						traceback.print_exc()
+				else:
+					# 例外をcatchしない場合はそのままraise
+					raise e
