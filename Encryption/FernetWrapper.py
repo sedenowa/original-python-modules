@@ -97,6 +97,7 @@ class FernetWrapper(Fernet):
 			self.__last_encrypted_bytes = _encrypted_bytes
 			self.__last_encrypted_str = _encrypted_str
 		else:
+			# 記録不要な場合は各メンバ変数初期化
 			self.__last_str_to_encrypt = ""
 			self.__last_bytes_to_encrypt = b""
 			self.__last_encrypted_bytes = b""
@@ -145,6 +146,7 @@ class FernetWrapper(Fernet):
 			self.__last_decrypted_bytes = _decrypted_bytes
 			self.__last_decrypted_str = _decrypted_str
 		else:
+			# 記録不要な場合は各メンバ変数初期化
 			self.__last_str_to_decrypt = ""
 			self.__last_bytes_to_decrypt = b""
 			self.__last_decrypted_bytes = b""
