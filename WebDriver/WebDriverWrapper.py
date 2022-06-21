@@ -153,6 +153,7 @@ class WebDriverWrapper(object):
 
 	# Pixel 5 相当の動きをするよう設定
 	def set_environment_as_pixel5(self):
+		"""
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return
@@ -166,6 +167,49 @@ class WebDriverWrapper(object):
 			Chrome/101.0.4951.41 Mobile Safari/537.36"
 		self.set_user_agent(user_agent=_user_agent)
 		self.driver.set_window_size(width=_width, height=_height)
+		"""
+		_user_agent: str = \
+			"--user-agent=Mozilla/5.0 (Linux; Android 12; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) \
+			Chrome/101.0.4951.41 Mobile Safari/537.36"
+
+		return self.__set_environment_as(
+			width=393,
+			height=851,
+			device_scale_factor=3,
+			mobile=True,
+			user_agent=_user_agent
+		)
+
+	# 指定したデバイス相当の動きをするよう設定
+	def __set_environment_as(
+			self,
+			width: int,
+			height: int,
+			device_scale_factor: int,
+			mobile: bool,
+			user_agent: str,
+	) -> bool:
+		# ドライバが生成されていなければそのまま終了
+		if self.driver is None:
+			return False
+
+		self.set_user_viewport(
+			width=width,
+			height=height,
+			device_scale_factor=device_scale_factor,
+			mobile=mobile
+		)
+
+		self.set_user_agent(
+			user_agent=user_agent
+		)
+
+		self.driver.set_window_size(
+			width=width,
+			height=height
+		)
+
+		return True
 
 	# その時点のスクリーンショットを保存
 	def save_screen_shot(self, save_path: str = "screenshot.png", make_directory: bool = True) -> bool:
