@@ -100,6 +100,7 @@ class WebDriverWrapper(object):
 			self,
 			by: str = By.ID,
 			value=None,
+			# 独自追加
 			catch_exception: bool = True,
 			output_trace: bool = True
 	) -> Optional[WebElement]:
@@ -128,6 +129,7 @@ class WebDriverWrapper(object):
 			self,
 			by: str = By.ID,
 			value=None,
+			# 独自追加
 			catch_exception: bool = True,
 			output_trace: bool = True
 	) -> List[WebElement]:
