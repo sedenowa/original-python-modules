@@ -7,10 +7,25 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import IEDriverManager
+from webdriver_manager.opera import OperaDriverManager
 
 # other
-from typing import Union, Optional, List
-from enum import IntEnum, auto
+from typing import Union
+from typing import Optional
+from typing import List
+from enum import IntEnum
+from enum import auto
+import traceback
+import os
+import unicodedata
+import time
+import urllib.parse
+import random
 
 
 # Original WebDriver Wrapper Class
@@ -95,7 +110,6 @@ class WebDriverWrapper(object):
 		except Exception as e:
 			if catch_exception:
 				if output_trace:
-					import traceback
 					traceback.print_exc()
 			else:
 				raise e
@@ -113,7 +127,6 @@ class WebDriverWrapper(object):
 			_found_elements = self.driver.find_elements(by=by, value=value)
 		except:
 			if output_trace:
-				import traceback
 				traceback.print_exc()
 			_found_elements = []
 		finally:
@@ -141,7 +154,6 @@ class WebDriverWrapper(object):
 
 	# その時点のスクリーンショットを保存
 	def save_screen_shot(self, save_path: str = "screenshot.png", make_directory: bool = True) -> bool:
-		import os
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -262,7 +274,6 @@ class WebDriverWrapper(object):
 
 			# 戻る操作のインターバル
 			if interval_sec > 0:
-				import time
 				time.sleep(interval_sec)
 
 		if move_anyway_finally:
@@ -273,7 +284,6 @@ class WebDriverWrapper(object):
 	# urlからクエリを除去
 	@classmethod
 	def remove_query(cls, url: str) -> str:
-		import urllib.parse
 		_parse_result: urllib.parse.ParseResult = urllib.parse.urlparse(url)
 		_replaced_parse_result: urllib.parse.ParseResult = _parse_result._replace(query=None)
 		_removed_url: str = urllib.parse.urlunparse(_replaced_parse_result)
@@ -311,7 +321,6 @@ class WebDriverWrapper(object):
 			chromium_profile_directory: str = "",
 			headless: bool = False,
 	) -> __DRIVER_CLASSES:
-		import os
 		# webdriver_manager関連のログ出力抑制(ログを出す場合はコメントアウト)
 		os.environ['WDM_LOG_LEVEL'] = wdm_log_level.__str__()
 		# webdriver_manager動作時の1行目の空行を省略(出す場合はコメントアウト)
@@ -357,7 +366,6 @@ class WebDriverWrapper(object):
 			headless: bool = False,
 			output_trace: bool = True
 	) -> Optional[webdriver.Chrome]:
-		import os
 		_options = webdriver.ChromeOptions()
 		if chrome_user_data_dir != "" and os.path.exists(chrome_user_data_dir) and chrome_profile_directory != "":
 			_options.add_argument("--user-data-dir=" + chrome_user_data_dir)
@@ -369,11 +377,9 @@ class WebDriverWrapper(object):
 		_driver: Optional[webdriver.Chrome] = None
 
 		try:
-			from webdriver_manager.chrome import ChromeDriverManager
 			_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=_options)
 		except:
 			if output_trace:
-				import traceback
 				traceback.print_exc()
 
 		return _driver
@@ -387,9 +393,6 @@ class WebDriverWrapper(object):
 			chromium_profile_directory: str = "",
 			headless: bool = False
 	) -> Optional[webdriver.Chrome]:
-		import os
-		from webdriver_manager.chrome import ChromeDriverManager
-		from webdriver_manager.core.utils import ChromeType
 		_options = webdriver.ChromeOptions()
 		if chromium_user_data_dir != "" and chromium_profile_directory != "":
 			if os.path.exists(chromium_user_data_dir):
@@ -404,7 +407,6 @@ class WebDriverWrapper(object):
 	# ドライバ取得(Edge)
 	# TODO:動作確認
 	def __get_new_edge_driver(cls) -> Optional[webdriver.Edge]:
-		from webdriver_manager.microsoft import EdgeChromiumDriverManager
 		_driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 		return _driver
 
@@ -412,7 +414,6 @@ class WebDriverWrapper(object):
 	# ドライバ取得(Firefox)
 	# TODO:動作確認
 	def __get_new_firefox_driver(cls) -> Optional[webdriver.Firefox]:
-		from webdriver_manager.firefox import GeckoDriverManager
 		_driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
 		return _driver
 
@@ -420,7 +421,6 @@ class WebDriverWrapper(object):
 	# ドライバ取得(IE)
 	# TODO:動作確認
 	def __get_new_ie_driver(cls) -> Optional[webdriver.Ie]:
-		from webdriver_manager.microsoft import IEDriverManager
 		_driver = webdriver.Ie(IEDriverManager().install())
 		return _driver
 
@@ -428,7 +428,6 @@ class WebDriverWrapper(object):
 	# ドライバ取得(Opera)
 	# TODO:動作確認
 	def __get_new_opera_driver(cls) -> Optional[webdriver.Opera]:
-		from webdriver_manager.opera import OperaDriverManager
 		_driver = webdriver.Opera(executable_path=OperaDriverManager().install())
 		return _driver
 
@@ -482,15 +481,12 @@ class WebDriverWrapper(object):
 	@classmethod
 	# 文字列を正規化
 	def normalize_text(cls, text: str = "") -> str:
-		import unicodedata
 		_normalized_text: str = unicodedata.normalize('NFKC', text)
 		return _normalized_text
 
 	@classmethod
 	# 指定した秒数待機
 	def wait_sec(cls, sec: float = 1.0, print_sec: bool = False):
-		import time
-
 		# スリープ時間表示
 		if print_sec:
 			print("wait " + str(sec) + " second.")
@@ -501,8 +497,6 @@ class WebDriverWrapper(object):
 	@classmethod
 	# ランダムな値を計算(下限と上限を指定)
 	def _calc_random_num(cls, min_num: float = 0.0, max_num: float = 0.0) -> float:
-		import random
-
 		# 格納用変数初期化
 		_min_num: float = 0.0
 		_max_num: float = 0.0
