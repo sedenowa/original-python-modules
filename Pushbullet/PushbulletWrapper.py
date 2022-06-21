@@ -2,7 +2,7 @@
 # pushbullet.py
 
 from pushbullet import Pushbullet, Device
-from typing import List, Optional
+from typing import List, Optional, BinaryIO, Any
 
 
 class PushbulletWrapper(Pushbullet):
@@ -171,6 +171,31 @@ class PushbulletWrapper(Pushbullet):
 				else:
 					# 例外をcatchしない場合はそのままraise
 					raise e
+
+	# メソッド拡張(upload_file)
+	def upload_file(
+			self,
+			f: BinaryIO,
+			file_name: str,
+			# 以下オプション
+			file_type: Optional[str] = None,
+			# 独自追加
+			catch_exception: bool = False,
+			output_trace: bool = True
+	):
+		try:
+			return super().upload_file(f=f, file_name=file_name, file_type=file_type)
+		except Exception as e:
+			if catch_exception:
+				# 例外をcatchする場合
+				if output_trace:
+					# トレースを出力
+					import traceback
+					traceback.print_exc()
+			else:
+				# 例外をcatchしない場合はそのままraise
+				raise e
+		return None
 
 	# メソッド拡張(push_file)
 	def push_file(
