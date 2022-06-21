@@ -75,13 +75,13 @@ class WebDriverWrapper(object):
 		self.driver.quit()
 
 	# ドライバ取得
-	def get_driver(self):
+	def get_driver(self) -> __DRIVER_CLASSES | None:
 		return self.driver
 
 	# よく使うメソッドの疑似オーバーロード
 	# find_element
 	# 対象が見つからなければNoneを返す
-	def find_element(self, by: str = By.ID, value=None, output_trace: bool = True) -> Optional[WebElement]:
+	def find_element(self, by: str = By.ID, value=None, catch_exception: bool = True, output_trace: bool = True) -> Optional[WebElement]:
 		# デフォルト返却値
 		_found_element: Optional[WebElement] = None
 
@@ -92,10 +92,13 @@ class WebDriverWrapper(object):
 		# 探索
 		try:
 			_found_element = self.driver.find_element(by=by, value=value)
-		except:
-			if output_trace:
-				import traceback
-				traceback.print_exc()
+		except Exception as e:
+			if catch_exception:
+				if output_trace:
+					import traceback
+					traceback.print_exc()
+			else:
+				raise e
 		finally:
 			return _found_element
 
