@@ -147,13 +147,13 @@ class WebDriverWrapper(object):
 			return False
 
 		# 保存先ディレクトリの存在チェック
-		_directory_name: str = os.path.dirname(save_path)
-		if (_directory_name == "") or os.path.exists(_directory_name):
+		_directory_path: str = os.path.dirname(save_path)
+		if (_directory_path == "") or os.path.exists(_directory_path):
 			# ディレクトリの指定がないか、指定ディレクトリが存在
 			pass
 		elif make_directory:
 			# 指定ディレクトリが存在せず、ディレクトリ作成したい場合
-			os.makedirs(_directory_name)
+			os.makedirs(_directory_path)
 		else:
 			# 指定ディレクトリが存在せず、ディレクトリ作成もしない
 			return False
