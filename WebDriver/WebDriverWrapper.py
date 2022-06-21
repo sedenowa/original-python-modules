@@ -170,15 +170,19 @@ class WebDriverWrapper(object):
 		self.set_user_agent(user_agent=_user_agent)
 		self.driver.set_window_size(width=_width, height=_height)
 		"""
+		_width: int = 393
+		_height: int = 851
+		_device_scale_factor: int = 3
+		_mobile: bool = True
 		_user_agent: str = \
 			"--user-agent=Mozilla/5.0 (Linux; Android 12; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) \
 			Chrome/101.0.4951.41 Mobile Safari/537.36"
 
 		return self.__set_environment_as(
-			width=393,
-			height=851,
-			device_scale_factor=3,
-			mobile=True,
+			width=_width,
+			height=_height,
+			device_scale_factor=_device_scale_factor,
+			mobile=_mobile,
 			user_agent=_user_agent
 		)
 
