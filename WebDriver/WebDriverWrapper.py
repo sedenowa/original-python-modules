@@ -96,7 +96,13 @@ class WebDriverWrapper(object):
 	# よく使うメソッドの疑似オーバーロード
 	# find_element
 	# 対象が見つからなければNoneを返す
-	def find_element(self, by: str = By.ID, value=None, catch_exception: bool = True, output_trace: bool = True) -> Optional[WebElement]:
+	def find_element(
+			self,
+			by: str = By.ID,
+			value=None,
+			catch_exception: bool = True,
+			output_trace: bool = True
+	) -> Optional[WebElement]:
 		# デフォルト返却値
 		_found_element: Optional[WebElement] = None
 
@@ -118,17 +124,26 @@ class WebDriverWrapper(object):
 
 	# find_elements
 	# 対象が見つからなければ[]を返す
-	def find_elements(self, by: str = By.ID, value=None, output_trace: bool = True) -> List[WebElement]:
+	def find_elements(
+			self,
+			by: str = By.ID,
+			value=None,
+			catch_exception: bool = True,
+			output_trace: bool = True
+	) -> List[WebElement]:
 		_found_elements: List[WebElement] = []
 		if self.driver is None:
 			return _found_elements
 
 		try:
 			_found_elements = self.driver.find_elements(by=by, value=value)
-		except:
-			if output_trace:
-				traceback.print_exc()
-			_found_elements = []
+		except Exception as e:
+			if catch_exception:
+				if output_trace:
+					traceback.print_exc()
+				_found_elements = []
+			else:
+				raise e
 		finally:
 			return _found_elements
 
