@@ -27,23 +27,21 @@ class FernetWrapper(Fernet):
 		super().__init__(key=_key, backend=backend)
 
 		# メンバ変数初期化
-		# 最後に暗号化した文字列(暗号化前)
+		# 最後に暗号化した文字列/バイト列(暗号化前)
 		self.__last_str_to_encrypt: str = ""
-		# 最後に暗号化したバイト列(暗号化前)
 		self.__last_bytes_to_encrypt: bytes = b""
-		# 最後に暗号化したバイト列(暗号化後)
-		self.__last_encrypted_bytes: bytes = b""
-		# 最後に暗号化した文字列(暗号化後)
-		self.__last_encrypted_str: str = ""
 
-		# 最後に復号した文字列(復号前)
+		# 最後に暗号化した文字列/バイト列(暗号化後)
+		self.__last_encrypted_str: str = ""
+		self.__last_encrypted_bytes: bytes = b""
+
+		# 最後に復号した文字列/バイト列(復号前)
 		self.__last_str_to_decrypt: str = ""
-		# 最後に復号したバイト列(復号前)
 		self.__last_bytes_to_decrypt: bytes = b""
-		# 最後に復号したバイト列(復号後)
-		self.__last_decrypted_bytes: bytes = b""
-		# 最後に復号した文字列(復号後)
+
+		# 最後に復号した文字列/バイト列(復号後)
 		self.__last_decrypted_str: str = ""
+		self.__last_decrypted_bytes: bytes = b""
 
 	# 暗号化
 	def encrypt(
