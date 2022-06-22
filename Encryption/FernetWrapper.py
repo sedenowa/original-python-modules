@@ -47,6 +47,7 @@ class FernetWrapper(Fernet):
 	def encrypt(
 			self,
 			source_to_encrypt: str | bytes,
+			# 以下オプション
 			encoding: str = "utf-8",
 			save: bool = False,
 			return_as_str: bool = False,
@@ -100,6 +101,7 @@ class FernetWrapper(Fernet):
 	def decrypt(
 			self,
 			source_to_decrypt: str | bytes,
+			# 以下オプション
 			encoding: str = "utf-8",
 			save: bool = False,
 			return_as_str: bool = True,
