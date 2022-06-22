@@ -29,37 +29,68 @@ class FernetWrapper(Fernet):
 		# 最後に復号した文字列(復号後)
 		self.__last_decrypted_str: str = ""
 
-	# 最後に暗号化した文字列(暗号化前)
-	def get_last_str_to_encrypt(self) -> str:
-		return self.__last_str_to_encrypt
+	# 最後に暗号化した文字列/バイト列(暗号化前)
+	# デフォルトでは文字列を返却
+	def get_last_data_to_encrypt(
+			self,
+			return_as_str: bool = True,
+			return_as_bytes: bool = False
+	) -> str | bytes | Tuple[str, bytes]:
+		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
+		if return_as_str:
+			if return_as_bytes:
+				return self.__last_str_to_encrypt, self.__last_bytes_to_encrypt
+			else:
+				return self.__last_str_to_encrypt
+		else:
+			return self.__last_bytes_to_encrypt
 
-	# 最後に暗号化したバイト列(暗号化前)
-	def get_last_bytes_to_encrypt(self) -> bytes:
-		return self.__last_bytes_to_encrypt
+	# 最後に暗号化した文字列/バイト列(暗号化後)
+	# デフォルトではバイト列を返却
+	def get_last_encrypted_data(
+			self,
+			return_as_str: bool = False,
+			return_as_bytes: bool = True
+	) -> str | bytes | Tuple[str, bytes]:
+		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
+		if return_as_str:
+			if return_as_bytes:
+				return self.__last_encrypted_str, self.__last_encrypted_bytes
+			else:
+				return self.__last_encrypted_str
+		else:
+			return self.__last_encrypted_bytes
 
-	# 最後に暗号化したバイト列(暗号化後)
-	def get_last_encrypted_bytes(self) -> bytes:
-		return self.__last_encrypted_bytes
+	# 最後に復号した文字列/バイト列(復号前)
+	# デフォルトではバイト列を返却
+	def get_last_data_to_decrypt(
+			self,
+			return_as_str: bool = False,
+			return_as_bytes: bool = True
+	) -> str | bytes | Tuple[str, bytes]:
+		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
+		if return_as_str:
+			if return_as_bytes:
+				return self.__last_str_to_decrypt, self.__last_bytes_to_decrypt
+			else:
+				return self.__last_str_to_decrypt
+		else:
+			return self.__last_bytes_to_decrypt
 
-	# 最後に暗号化した文字列(暗号化後)
-	def get_last_encrypted_str(self) -> str:
-		return self.__last_encrypted_str
-
-	# 最後に復号した文字列(復号前)
-	def get_last_str_to_decrypt(self) -> str:
-		return self.__last_str_to_decrypt
-
-	# 最後に復号したバイト列(復号前)
-	def get_last_bytes_to_decrypt(self) -> bytes:
-		return self.__last_bytes_to_decrypt
-
-	# 最後に復号されたバイト列(復号後)
-	def get_last_decrypted_bytes(self) -> bytes:
-		return self.__last_decrypted_bytes
-
-	# 最後に復号した文字列(復号後)
-	def get_last_decrypted_str(self) -> str:
-		return self.__last_decrypted_str
+	# 最後に復号された文字列/バイト列(復号後)
+	def get_last_decrypted_data(
+			self,
+			return_as_str: bool = True,
+			return_as_bytes: bool = False
+	) -> str | bytes | Tuple[str, bytes]:
+		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
+		if return_as_str:
+			if return_as_bytes:
+				return self.__last_decrypted_str, self.__last_decrypted_bytes
+			else:
+				return self.__last_decrypted_str
+		else:
+			return self.__last_decrypted_bytes
 
 	# 暗号化
 	def encrypt(
