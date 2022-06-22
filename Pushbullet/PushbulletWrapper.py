@@ -1,8 +1,11 @@
 # required packages:
 # pushbullet.py
 
-from pushbullet import Pushbullet, Device
-from typing import List, Optional, BinaryIO, Any
+from pushbullet import Pushbullet
+from pushbullet import Device
+from typing import List
+from typing import Optional
+from typing import BinaryIO
 
 
 class PushbulletWrapper(Pushbullet):
