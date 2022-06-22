@@ -1,15 +1,30 @@
 from cryptography.fernet import Fernet
 from typing import Tuple
+from typing import Any
 
 
 class FernetWrapper(Fernet):
 	# コンストラクタ
-	def __init__(self):
+	def __init__(
+			self,
+			key: bytes | str | None = None,
+			backend: Any | None = None
+	):
 		# 暗号化キー(メンバ変数としては保存しない)
-		__key: bytes = super().generate_key()
+		__key: bytes
+		# 引数で暗号化キーの指定があればそちらを優先する
+		if (type(key) is str) and (len(key) > 0):
+			# 引数の型がstrの場合、bytesに変換
+			__key = key.encode()
+		elif (type(key) is bytes) and (len(key) > 0):
+			# 引数の型がbytesの場合、そのまま適用
+			__key = key
+		else:
+			# 上記以外の場合は自動生成
+			__key = super().generate_key()
 
 		# 親クラス初期化
-		super().__init__(key=__key)
+		super().__init__(key=__key, backend=backend)
 
 		# メンバ変数初期化
 		# 最後に暗号化した文字列(暗号化前)
