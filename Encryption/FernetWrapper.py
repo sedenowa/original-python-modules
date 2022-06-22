@@ -1,5 +1,4 @@
 from cryptography.fernet import Fernet
-from typing import Optional
 
 
 class FernetWrapper(Fernet):
@@ -19,6 +18,7 @@ class FernetWrapper(Fernet):
 		self.__last_encrypted_bytes: bytes = b""
 		# 最後に暗号化した文字列(暗号化後)
 		self.__last_encrypted_str: str = ""
+
 		# 最後に復号した文字列(復号前)
 		self.__last_str_to_decrypt: str = ""
 		# 最後に復号したバイト列(復号前)
