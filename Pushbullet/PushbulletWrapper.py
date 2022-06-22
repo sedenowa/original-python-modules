@@ -6,6 +6,7 @@ from pushbullet import Device
 from typing import List
 from typing import Optional
 from typing import BinaryIO
+import traceback
 
 
 class PushbulletWrapper(Pushbullet):
@@ -86,7 +87,6 @@ class PushbulletWrapper(Pushbullet):
 						# 例外をcatchする場合
 						if output_trace:
 							# トレースを出力
-							import traceback
 							traceback.print_exc()
 					else:
 						# 例外をcatchしない場合はそのままraise
@@ -107,7 +107,6 @@ class PushbulletWrapper(Pushbullet):
 					# 例外をcatchする場合
 					if output_trace:
 						# トレースを出力
-						import traceback
 						traceback.print_exc()
 				else:
 					# 例外をcatchしない場合はそのままraise
@@ -147,7 +146,6 @@ class PushbulletWrapper(Pushbullet):
 						# 例外をcatchする場合
 						if output_trace:
 							# トレースを出力
-							import traceback
 							traceback.print_exc()
 					else:
 						# 例外をcatchしない場合はそのままraise
@@ -169,7 +167,6 @@ class PushbulletWrapper(Pushbullet):
 					# 例外をcatchする場合
 					if output_trace:
 						# トレースを出力
-						import traceback
 						traceback.print_exc()
 				else:
 					# 例外をcatchしない場合はそのままraise
@@ -193,7 +190,6 @@ class PushbulletWrapper(Pushbullet):
 				# 例外をcatchする場合
 				if output_trace:
 					# トレースを出力
-					import traceback
 					traceback.print_exc()
 			else:
 				# 例外をcatchしない場合はそのままraise
@@ -238,7 +234,6 @@ class PushbulletWrapper(Pushbullet):
 						# 例外をcatchする場合
 						if output_trace:
 							# トレースを出力
-							import traceback
 							traceback.print_exc()
 					else:
 						# 例外をcatchしない場合はそのままraise
@@ -262,7 +257,6 @@ class PushbulletWrapper(Pushbullet):
 					# 例外をcatchする場合
 					if output_trace:
 						# トレースを出力
-						import traceback
 						traceback.print_exc()
 				else:
 					# 例外をcatchしない場合はそのままraise
