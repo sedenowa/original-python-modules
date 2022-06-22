@@ -1,4 +1,5 @@
 from cryptography.fernet import Fernet
+from typing import Tuple
 
 
 class FernetWrapper(Fernet):
@@ -66,8 +67,9 @@ class FernetWrapper(Fernet):
 			source_to_encrypt: str | bytes,
 			encoding: str = "utf-8",
 			save: bool = False,
-			return_as_str: bool = False
-	) -> str | bytes:
+			return_as_str: bool = False,
+			return_as_bytes: bool = True
+	) -> str | bytes | Tuple[str, bytes]:
 		# 暗号化前の文字列(初期化)
 		_str_to_encrypt: str = ""
 		# 暗号化前のバイト列(初期化)
@@ -103,9 +105,12 @@ class FernetWrapper(Fernet):
 			self.__last_encrypted_bytes = b""
 			self.__last_encrypted_str = ""
 
-		# 指定の形式で返却(bytes | str)
+		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
 		if return_as_str:
-			return _encrypted_str
+			if return_as_bytes:
+				return _encrypted_str, _encrypted_bytes
+			else:
+				return _encrypted_str
 		else:
 			return _encrypted_bytes
 
@@ -115,8 +120,9 @@ class FernetWrapper(Fernet):
 			source_to_decrypt: str | bytes,
 			encoding: str = "utf-8",
 			save: bool = False,
-			return_as_str: bool = True
-	) -> str | bytes:
+			return_as_str: bool = True,
+			return_as_bytes: bool = False
+	) -> str | bytes | Tuple[str, bytes]:
 		# 復号前の文字列(初期化)
 		_str_to_decrypt: str = ""
 		# 復号前のバイト列(初期化)
@@ -152,8 +158,11 @@ class FernetWrapper(Fernet):
 			self.__last_decrypted_bytes = b""
 			self.__last_decrypted_str = ""
 
-		# 指定の形式で返却(str | bytes)
+		# 指定の形式で返却(bytes | str | Tuple[str, bytes])
 		if return_as_str:
-			return _decrypted_str
+			if return_as_bytes:
+				return _decrypted_str, _decrypted_bytes
+			else:
+				return _decrypted_str
 		else:
 			return _decrypted_bytes
