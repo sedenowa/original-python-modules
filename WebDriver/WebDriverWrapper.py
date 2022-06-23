@@ -78,7 +78,15 @@ class WebDriverWrapper(object):
 				chromium_profile_directory=chromium_profile_directory,
 				headless=headless
 			)
+		# ブラウザID保存
 		self.__browser_id: int = browser_id
+
+		# メンバ変数としてIDを設定、保持
+		self.__set_id()
+
+	# メンバ変数としてIDを設定、保持
+	def __set_id(self):
+		self.__id: int = id(self)
 
 	# デストラクタ
 	def __del__(self):
