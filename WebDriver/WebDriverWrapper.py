@@ -66,7 +66,9 @@ class WebDriverWrapper(object):
 			chrome_profile_directory: str = "",
 			chromium_user_data_dir: str = "",
 			chromium_profile_directory: str = "",
-			headless: bool = False
+			headless: bool = False,
+			catch_exception: bool = False,
+			output_trace: bool = True
 	):
 		# ブラウザ用のドライバ取得
 		self.driver: WebDriverWrapper.__DRIVER_CLASSES = \
@@ -84,12 +86,36 @@ class WebDriverWrapper(object):
 		# メンバ変数としてIDを設定、保持
 		self.__set_id()
 
+		# 一時利用用のデータ保存領域
+		# temporary_dir_[class name]_[id]
+		self.__temporary_directory: str = "temporary_dir_" + type(self).__name__ + "_" + str(self.__id)
+		self.__made_temporary_directory_by_myself: bool = False
+		if not os.path.exists(self.__temporary_directory):
+			try:
+				# データ保存領域作成
+				os.makedirs(self.__temporary_directory)
+				self.__made_temporary_directory_by_myself = True
+			except Exception as e:
+				if catch_exception:
+					# 例外をcatchする場合
+					if output_trace:
+						# トレースを出力
+						traceback.print_exc()
+				else:
+					# 例外をcatchしない場合はそのままraise
+					raise e
+
 	# メンバ変数としてIDを設定、保持
 	def __set_id(self):
 		self.__id: int = id(self)
 
 	# デストラクタ
 	def __del__(self):
+		# 一時保存用ディレクトリ削除(自ら作成した場合)
+		if self.__made_temporary_directory_by_myself:
+			if os.path.exists(self.__temporary_directory):
+				os.rmdir(self.__temporary_directory)
+
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return
