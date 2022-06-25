@@ -26,6 +26,7 @@ import unicodedata
 import time
 import urllib.parse
 import random
+import inspect
 
 
 # Original WebDriver Wrapper Class
@@ -86,9 +87,17 @@ class WebDriverWrapper(object):
 		# メンバ変数としてIDを設定、保持
 		self.__set_id()
 
+		# モジュールの絶対パス
+		self.__abspath_of_this_module: str = inspect.getfile(self.__class__)
+		# モジュールの格納ディレクトリ
+		self.__abspath_directory_of_this_module: str = os.path.dirname(self.__abspath_of_this_module)
+		# モジュール用の一時ディレクトリ
+		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "temp"
+
 		# 一時利用用のデータ保存領域
-		# temporary_dir_[class name]_[id]
-		self.__temporary_directory: str = "temporary_dir_" + type(self).__name__ + "_" + str(self.__id)
+		# [Dir of this module]]\temp\[id]\
+		self.__temporary_directory: str = \
+			self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
 		self.__made_temporary_directory_by_myself: bool = False
 		if not os.path.exists(self.__temporary_directory):
 			try:
