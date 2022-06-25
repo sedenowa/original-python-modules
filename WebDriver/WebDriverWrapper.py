@@ -87,11 +87,11 @@ class WebDriverWrapper(object):
 		# メンバ変数としてIDを設定、保持
 		self.__set_id()
 
-		# モジュールの絶対パス
+		# モジュールファイルの絶対パス
 		self.__abspath_of_this_module: str = inspect.getfile(self.__class__)
-		# モジュールの格納ディレクトリ
+		# モジュールファイルの格納ディレクトリ
 		self.__abspath_directory_of_this_module: str = os.path.dirname(self.__abspath_of_this_module)
-		# モジュール用の一時ディレクトリ
+		# インスタンス毎の一時データ格納用ディレクトリ
 		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "temp"
 
 		# 一時利用用のデータ保存領域
