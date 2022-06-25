@@ -91,7 +91,7 @@ class WebDriverWrapper(object):
 		self.__abspath_of_this_module: str = inspect.getfile(self.__class__)
 		# モジュールファイルの格納ディレクトリ
 		self.__abspath_directory_of_this_module: str = os.path.dirname(self.__abspath_of_this_module)
-		# インスタンス毎の一時データ格納用ディレクトリ
+		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ
 		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "temp"
 
 		# 一時利用用のデータ保存領域
