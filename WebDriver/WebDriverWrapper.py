@@ -262,7 +262,7 @@ class WebDriverWrapper(object):
 	# Pixel 5 相当の動きをするよう設定
 	def set_environment_as_pixel5(
 			self
-	):
+	) -> bool:
 		_width: int = 393
 		_height: int = 851
 		_device_scale_factor: int = 3
