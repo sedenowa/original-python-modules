@@ -26,21 +26,16 @@ class FernetWrapper(Fernet):
 		super().__init__(key=_key, backend=backend)
 
 		# メンバ変数初期化
-		# 最後に暗号化した文字列/バイト列(暗号化前)
-		self.__last_str_to_encrypt: str = ""
-		self.__last_bytes_to_encrypt: bytes = b""
-
-		# 最後に暗号化した文字列/バイト列(暗号化後)
-		self.__last_encrypted_str: str = ""
-		self.__last_encrypted_bytes: bytes = b""
-
-		# 最後に復号した文字列/バイト列(復号前)
-		self.__last_str_to_decrypt: str = ""
-		self.__last_bytes_to_decrypt: bytes = b""
-
-		# 最後に復号した文字列/バイト列(復号後)
-		self.__last_decrypted_str: str = ""
-		self.__last_decrypted_bytes: bytes = b""
+		self.__set_last_data(
+			str_to_encrypt="",
+			bytes_to_encrypt=b"",
+			encrypted_bytes=b"",
+			encrypted_str="",
+			str_to_decrypt="",
+			bytes_to_decrypt=b"",
+			decrypted_bytes=b"",
+			decrypted_str=""
+		)
 
 	# 暗号化
 	def encrypt(
@@ -112,16 +107,20 @@ class FernetWrapper(Fernet):
 
 		# 要すれば記録
 		if save:
-			self.__last_str_to_decrypt = _str_to_decrypt
-			self.__last_bytes_to_decrypt = _bytes_to_decrypt
-			self.__last_decrypted_bytes = _decrypted_bytes
-			self.__last_decrypted_str = _decrypted_str
+			self.__set_last_data(
+				str_to_decrypt=_str_to_decrypt,
+				bytes_to_decrypt=_bytes_to_decrypt,
+				decrypted_bytes=_decrypted_bytes,
+				decrypted_str=_decrypted_str
+			)
 		else:
 			# 記録不要な場合は各メンバ変数初期化
-			self.__last_str_to_decrypt = ""
-			self.__last_bytes_to_decrypt = b""
-			self.__last_decrypted_bytes = b""
-			self.__last_decrypted_str = ""
+			self.__set_last_data(
+				str_to_decrypt="",
+				bytes_to_decrypt=b"",
+				decrypted_bytes=b"",
+				decrypted_str=""
+			)
 
 		# 指定の形式で返却(bytes | str | tuple[str, bytes])
 		if return_as_str:
