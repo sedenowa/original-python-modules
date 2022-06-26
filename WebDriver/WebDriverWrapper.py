@@ -89,13 +89,12 @@ class WebDriverWrapper(object):
 		# モジュールファイルの格納ディレクトリ
 		self.__abspath_directory_of_this_module: str = os.path.dirname(self.__abspath_of_this_module)
 		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ
-		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "temp"
+		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "_temp"
 
 		# メンバ変数としてIDを設定、保持
 		self.__id: Optional[int] = self.__get_unique_id()
 
-		# 一時利用用のデータ保存領域
-		# [Dir of this module]]\temp\[id]\
+		# インスタンス毎の一時データ格納用ディレクトリ
 		self.__temporary_directory: str = \
 			self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
 		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
@@ -163,8 +162,13 @@ class WebDriverWrapper(object):
 			if os.path.exists(self.__temporary_directory):
 				os.rmdir(self.__temporary_directory)
 
-		# モジュール共通のインスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ削除(可能なら)
-		# TODO
+		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ削除(可能なら)
+		if os.path.exists(self.__abspath_temp_directory_of_this_module):
+			_contents: List[str] = os.listdir(self.__abspath_temp_directory_of_this_module)
+			print(_contents)
+			if len(_contents) == 0:
+				# 中身が空であれば削除
+				os.rmdir(self.__abspath_temp_directory_of_this_module)
 
 		# ドライバが生成されている場合はドライバを終了
 		if self.driver is not None:
