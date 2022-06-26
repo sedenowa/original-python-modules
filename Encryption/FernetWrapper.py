@@ -151,6 +151,26 @@ class FernetWrapper(Fernet):
 		else:
 			return _decrypted_bytes
 
+	@staticmethod
+	# 文字列またはバイト列から、両者に変換した際の値を得る
+	# str | bytes -> Tuple[str, bytes]
+	def get_str_and_bytes(
+			source: str | bytes,
+			encoding: str = "utf-8"
+	) -> Tuple[str, bytes]:
+		if type(source) is str:
+			# 入力文字列はそのまま
+			_source_str = source
+			# 入力文字列をバイト列に変換
+			_source_bytes = source.encode(encoding=encoding)
+		else:
+			# 入力バイト列を文字列に変換
+			_source_str = source.decode(encoding=encoding)
+			# 入力バイト列はそのまま
+			_source_bytes = source
+
+		return _source_str, _source_bytes
+
 	# 最後に暗号化した文字列/バイト列(暗号化前)
 	# デフォルトでは文字列を返却
 	def get_last_data_to_encrypt(
