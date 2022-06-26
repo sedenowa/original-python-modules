@@ -154,7 +154,7 @@ class FernetWrapper(Fernet):
 
 		return _source_str, _source_bytes
 
-	#
+	# 最後に暗号化/復号したデータの更新
 	def __set_last_data(
 			self,
 			str_to_encrypt: Optional[str] = None,
