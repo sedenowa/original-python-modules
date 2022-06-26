@@ -17,7 +17,6 @@ from webdriver_manager.opera import OperaDriverManager
 # other
 from typing import Union
 from typing import Optional
-from typing import List
 from enum import IntEnum
 import traceback
 import os
@@ -182,7 +181,7 @@ class WebDriverWrapper(object):
 
 		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ削除(可能なら)
 		if os.path.exists(self.__abspath_temp_directory_of_this_module):
-			_contents: List[str] = os.listdir(self.__abspath_temp_directory_of_this_module)
+			_contents: list[str] = os.listdir(self.__abspath_temp_directory_of_this_module)
 			if len(_contents) == 0:
 				# 中身が空であれば削除
 				os.rmdir(self.__abspath_temp_directory_of_this_module)
@@ -236,8 +235,8 @@ class WebDriverWrapper(object):
 			# 独自追加
 			catch_exception: bool = True,
 			output_trace: bool = True
-	) -> List[WebElement]:
-		_found_elements: List[WebElement] = []
+	) -> list[WebElement]:
+		_found_elements: list[WebElement] = []
 		if self.driver is None:
 			return _found_elements
 
