@@ -242,10 +242,10 @@ class FernetWrapper(Fernet):
 	@staticmethod
 	# 文字列/バイト列の返却形式を成型
 	def __assemble_str_and_bytes_to_return(
-			str_to_return: str = "",
-			bytes_to_return: bytes = b"",
 			return_as_str: bool = True,
-			return_as_bytes: bool = True
+			str_to_return: str = "",
+			return_as_bytes: bool = True,
+			bytes_to_return: bytes = b""
 	) -> str | bytes | tuple[str, bytes] | None:
 		if return_as_str:
 			if return_as_bytes:
