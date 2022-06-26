@@ -102,7 +102,9 @@ class WebDriverWrapper(object):
 		self.__made_temporary_directory_by_myself: bool = (self.__temporary_directory is not None)
 
 	# 利用可能なIDを探索
-	def __get_unique_id(self) -> Optional[int]:
+	def __get_unique_id(
+			self
+	) -> Optional[int]:
 		_is_id_set: bool = False
 
 		# デフォルトではインスタンスのidを取得・設定
@@ -142,7 +144,11 @@ class WebDriverWrapper(object):
 		return None
 
 	# インスタンス毎の一時データ格納用ディレクトリ生成
-	def __make_temporary_directory(self, catch_exception: bool = False, output_trace: bool = True) -> Optional[str]:
+	def __make_temporary_directory(
+			self,
+			catch_exception: bool = False,
+			output_trace: bool = True
+	) -> Optional[str]:
 		_temporary_directory: str = self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
 
 		# インスタンス毎の一時データ格納用ディレクトリ生成
@@ -166,7 +172,9 @@ class WebDriverWrapper(object):
 		return None
 
 	# デストラクタ
-	def __del__(self):
+	def __del__(
+			self
+	):
 		# インスタンス毎の一時データ格納用ディレクトリ削除(自ら作成した場合)
 		if self.__made_temporary_directory_by_myself:
 			if os.path.exists(self.__temporary_directory):
@@ -184,7 +192,9 @@ class WebDriverWrapper(object):
 			self.driver.quit()
 
 	# ドライバ取得
-	def get_driver(self) -> __DRIVER_CLASSES | None:
+	def get_driver(
+			self
+	) -> __DRIVER_CLASSES | None:
 		return self.driver
 
 	# よく使うメソッドの疑似オーバーロード
@@ -244,11 +254,15 @@ class WebDriverWrapper(object):
 			return _found_elements
 
 	# 現在のブラウザID取得
-	def __get_current_browser_id(self) -> int:
+	def __get_current_browser_id(
+			self
+	) -> int:
 		return self.__browser_id
 
 	# Pixel 5 相当の動きをするよう設定
-	def set_environment_as_pixel5(self):
+	def set_environment_as_pixel5(
+			self
+	):
 		_width: int = 393
 		_height: int = 851
 		_device_scale_factor: int = 3
@@ -297,7 +311,11 @@ class WebDriverWrapper(object):
 		return True
 
 	# その時点のスクリーンショットを保存
-	def save_screen_shot(self, save_path: str = "screenshot.png", make_directory: bool = True) -> bool:
+	def save_screen_shot(
+			self,
+			save_path: str = "screenshot.png",
+			make_directory: bool = True
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -320,7 +338,10 @@ class WebDriverWrapper(object):
 		return True
 
 	# 読み込み完了待機
-	def wait_load_complete(self, timeout_sec: int = 10) -> bool:
+	def wait_load_complete(
+			self,
+			timeout_sec: int = 10
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -350,7 +371,10 @@ class WebDriverWrapper(object):
 		return True
 
 	# user_agentを設定
-	def set_user_agent(self, user_agent: str) -> bool:
+	def set_user_agent(
+			self,
+			user_agent: str
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -363,7 +387,10 @@ class WebDriverWrapper(object):
 		return True
 
 	# 直接指定したurlに遷移
-	def move_to_url(self, url: str) -> bool:
+	def move_to_url(
+			self,
+			url: str
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -427,14 +454,19 @@ class WebDriverWrapper(object):
 
 	# urlからクエリを除去
 	@classmethod
-	def remove_query(cls, url: str) -> str:
+	def remove_query(
+			cls,
+			url: str
+	) -> str:
 		_parse_result: urllib.parse.ParseResult = urllib.parse.urlparse(url)
 		_replaced_parse_result: urllib.parse.ParseResult = _parse_result._replace(query=None)
 		_removed_url: str = urllib.parse.urlunparse(_replaced_parse_result)
 		return _removed_url
 
 	# 現在のURLを取得
-	def get_current_url(self) -> str:
+	def get_current_url(
+			self
+	) -> str:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return ""
@@ -442,7 +474,10 @@ class WebDriverWrapper(object):
 		return self.driver.current_url
 
 	# スクリプト経由でクリックする
-	def click_element(self, element: WebElement) -> bool:
+	def click_element(
+			self,
+			element: WebElement
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
@@ -557,35 +592,46 @@ class WebDriverWrapper(object):
 	@classmethod
 	# ドライバ取得(Edge)
 	# TODO:動作確認
-	def __get_new_edge_driver(cls) -> Optional[webdriver.Edge]:
+	def __get_new_edge_driver(
+			cls
+	) -> Optional[webdriver.Edge]:
 		_driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 		return _driver
 
 	@classmethod
 	# ドライバ取得(Firefox)
 	# TODO:動作確認
-	def __get_new_firefox_driver(cls) -> Optional[webdriver.Firefox]:
+	def __get_new_firefox_driver(
+			cls
+	) -> Optional[webdriver.Firefox]:
 		_driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
 		return _driver
 
 	@classmethod
 	# ドライバ取得(IE)
 	# TODO:動作確認
-	def __get_new_ie_driver(cls) -> Optional[webdriver.Ie]:
+	def __get_new_ie_driver(
+			cls
+	) -> Optional[webdriver.Ie]:
 		_driver = webdriver.Ie(IEDriverManager().install())
 		return _driver
 
 	@classmethod
 	# ドライバ取得(Opera)
 	# TODO:動作確認
-	def __get_new_opera_driver(cls) -> Optional[webdriver.Opera]:
+	def __get_new_opera_driver(
+			cls
+	) -> Optional[webdriver.Opera]:
 		_driver = webdriver.Opera(executable_path=OperaDriverManager().install())
 		return _driver
 
 	@classmethod
 	# ブラウザID取得
 	# ChromeとChromiumを区別できない制約あり
-	def __get_browser_id(cls, driver: __DRIVER_CLASSES) -> int:
+	def __get_browser_id(
+			cls,
+			driver: __DRIVER_CLASSES
+	) -> int:
 		_browser_id: int = cls.BrowserIds.NONE
 		if isinstance(driver, webdriver.Chrome):
 			# Chrome(/ Chromium)
@@ -607,7 +653,10 @@ class WebDriverWrapper(object):
 
 	@classmethod
 	# ドライバのクラス取得
-	def __get_driver_class(cls, browser_id: int = BrowserIds.CHROME) -> __DRIVER_CLASS_TYPES:
+	def __get_driver_class(
+			cls,
+			browser_id: int = BrowserIds.CHROME
+	) -> __DRIVER_CLASS_TYPES:
 		if browser_id == cls.BrowserIds.CHROMIUM:
 			# Chromium
 			_driver_class = webdriver.Edge
@@ -630,13 +679,20 @@ class WebDriverWrapper(object):
 
 	@classmethod
 	# 文字列を正規化
-	def normalize_text(cls, text: str = "") -> str:
+	def normalize_text(
+			cls,
+			text: str = ""
+	) -> str:
 		_normalized_text: str = unicodedata.normalize('NFKC', text)
 		return _normalized_text
 
 	@classmethod
 	# 指定した秒数待機
-	def wait_sec(cls, sec: float = 1.0, print_sec: bool = False):
+	def wait_sec(
+			cls,
+			sec: float = 1.0,
+			print_sec: bool = False
+	):
 		# スリープ時間表示
 		if print_sec:
 			print("wait " + str(sec) + " second.")
@@ -646,7 +702,11 @@ class WebDriverWrapper(object):
 
 	@classmethod
 	# ランダムな値を計算(下限と上限を指定)
-	def _calc_random_num(cls, min_num: float = 0.0, max_num: float = 0.0) -> float:
+	def _calc_random_num(
+			cls,
+			min_num: float = 0.0,
+			max_num: float = 0.0
+	) -> float:
 		# 格納用変数初期化
 		_min_num: float = 0.0
 		_max_num: float = 0.0
@@ -673,7 +733,12 @@ class WebDriverWrapper(object):
 
 	@classmethod
 	# ランダムな時間待機(下限と上限を指定)
-	def wait_random_sec(cls, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False):
+	def wait_random_sec(
+			cls,
+			min_sec: float = 1.0,
+			max_sec: float = 3.0,
+			print_sec: bool = False
+	):
 		# スリープ時間計算
 		_random_sleep_sec: float = cls._calc_random_num(min_num=min_sec, max_num=max_sec)
 
@@ -681,7 +746,12 @@ class WebDriverWrapper(object):
 		cls.wait_sec(sec=_random_sleep_sec, print_sec=print_sec)
 
 	# 読み込み待機 / +αの時間待機
-	def wait_load_and_additional_time(self, min_sec: float = 1.0, max_sec: float = 3.0, print_sec: bool = False) -> bool:
+	def wait_load_and_additional_time(
+			self,
+			min_sec: float = 1.0,
+			max_sec: float = 3.0,
+			print_sec: bool = False
+	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
 			return False
