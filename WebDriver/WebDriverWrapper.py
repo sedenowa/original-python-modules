@@ -158,17 +158,17 @@ class WebDriverWrapper(object):
 
 	# デストラクタ
 	def __del__(self):
-		# 一時保存用ディレクトリ削除(自ら作成した場合)
+		# インスタンス毎の一時データ格納用ディレクトリ削除(自ら作成した場合)
 		if self.__made_temporary_directory_by_myself:
 			if os.path.exists(self.__temporary_directory):
 				os.rmdir(self.__temporary_directory)
 
-		# ドライバが生成されていなければそのまま終了
-		if self.driver is None:
-			return
+		# モジュール共通のインスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ削除(可能なら)
+		# TODO
 
 		# ドライバが生成されている場合はドライバを終了
-		self.driver.quit()
+		if self.driver is not None:
+			self.driver.quit()
 
 	# ドライバ取得
 	def get_driver(self) -> __DRIVER_CLASSES | None:
