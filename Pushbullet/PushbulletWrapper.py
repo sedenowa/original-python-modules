@@ -3,7 +3,6 @@
 
 from pushbullet import Pushbullet
 from pushbullet import Device
-from typing import List
 from typing import Optional
 from typing import BinaryIO
 import traceback
@@ -14,7 +13,7 @@ class PushbulletWrapper(Pushbullet):
 	def __init__(
 			self,
 			api_key: str,
-			target_device_nicknames: Optional[List[str]] = None
+			target_device_nicknames: Optional[list[str]] = None
 	):
 		# 通知対象のデバイス名リストが指定されていない場合
 		if target_device_nicknames is None:
@@ -24,8 +23,8 @@ class PushbulletWrapper(Pushbullet):
 		super().__init__(api_key=api_key)
 
 		# メンバ変数初期化
-		self.target_devices: List[Device] = []
-		self.target_device_nicknames: List[str] = []
+		self.target_devices: list[Device] = []
+		self.target_device_nicknames: list[str] = []
 
 		# 特定のデバイスを抽出
 		self.set_target_devices(target_device_nicknames=target_device_nicknames)
@@ -33,7 +32,7 @@ class PushbulletWrapper(Pushbullet):
 	# 特定のデバイスを抽出して保持
 	def set_target_devices(
 			self,
-			target_device_nicknames: Optional[List[str]] = None,
+			target_device_nicknames: Optional[list[str]] = None,
 			force_reset: bool = False
 	):
 		# 強制リセットのフラグが立っている場合 または デバイス名の指定がない場合
