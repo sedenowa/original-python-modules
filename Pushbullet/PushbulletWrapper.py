@@ -3,7 +3,6 @@
 
 from pushbullet import Pushbullet
 from pushbullet import Device
-from typing import Optional
 from typing import BinaryIO
 import traceback
 
@@ -13,7 +12,7 @@ class PushbulletWrapper(Pushbullet):
 	def __init__(
 			self,
 			api_key: str,
-			target_device_nicknames: Optional[list[str]] = None
+			target_device_nicknames: list[str] | None = None
 	):
 		# 通知対象のデバイス名リストが指定されていない場合
 		if target_device_nicknames is None:
@@ -32,7 +31,7 @@ class PushbulletWrapper(Pushbullet):
 	# 特定のデバイスを抽出して保持
 	def set_target_devices(
 			self,
-			target_device_nicknames: Optional[list[str]] = None,
+			target_device_nicknames: list[str] | None = None,
 			force_reset: bool = False
 	):
 		# 強制リセットのフラグが立っている場合 または デバイス名の指定がない場合
@@ -60,10 +59,10 @@ class PushbulletWrapper(Pushbullet):
 			title: str,
 			body: str,
 			# 以下オプション
-			device: Optional[Device] = None,
-			chat: Optional[str] = None,
-			email: Optional[str] = None,
-			channel: Optional[str] = None,
+			device: Device | None = None,
+			chat: str | None = None,
+			email: str | None = None,
+			channel: str | None = None,
 			# 独自追加
 			only_target: bool = True,
 			catch_exception: bool = False,
@@ -117,11 +116,11 @@ class PushbulletWrapper(Pushbullet):
 			title: str,
 			url: str,
 			# 以下オプション
-			body: Optional[str] = None,
-			device: Optional[Device] = None,
-			chat: Optional[str] = None,
-			email: Optional[str] = None,
-			channel: Optional[str] = None,
+			body: str | None = None,
+			device: Device | None = None,
+			chat: str | None = None,
+			email: str | None = None,
+			channel: str | None = None,
 			# 独自追加
 			only_target: bool = True,
 			catch_exception: bool = False,
@@ -177,7 +176,7 @@ class PushbulletWrapper(Pushbullet):
 			f: BinaryIO,
 			file_name: str,
 			# 以下オプション
-			file_type: Optional[str] = None,
+			file_type: str | None = None,
 			# 独自追加
 			catch_exception: bool = False,
 			output_trace: bool = True
@@ -202,12 +201,12 @@ class PushbulletWrapper(Pushbullet):
 			file_url: str,
 			file_type: str,
 			# 以下オプション
-			body: Optional[str] = None,
-			title: Optional[str] = None,
-			device: Optional[Device] = None,
-			chat: Optional[str] = None,
-			email: Optional[str] = None,
-			channel: Optional[str] = None,
+			body: str | None = None,
+			title: str | None = None,
+			device: Device | None = None,
+			chat: str | None = None,
+			email: str | None = None,
+			channel: str | None = None,
 			# 独自追加
 			only_target: bool = True,
 			catch_exception: bool = False,
