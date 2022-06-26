@@ -19,7 +19,6 @@ from typing import Union
 from typing import Optional
 from typing import List
 from enum import IntEnum
-from enum import auto
 import traceback
 import os
 import unicodedata
@@ -51,18 +50,18 @@ class WebDriverWrapper(object):
 
 	# CONST VALUES
 	class BrowserIds(IntEnum):
-		NONE: auto = auto()
-		CHROME: auto = auto()
-		CHROMIUM: auto = auto()
-		EDGE: auto = auto()
-		FIREFOX: auto = auto()
-		IE: auto = auto()
-		OPERA: auto = auto()
+		NONE: int = 0
+		CHROME: int = 1
+		CHROMIUM: int = 2
+		EDGE: int = 3
+		FIREFOX: int = 4
+		IE: int = 5
+		OPERA: int = 6
 
 	# コンストラクタ
 	def __init__(
 			self,
-			browser_id: int = BrowserIds.CHROME.value,
+			browser_id: int = BrowserIds.CHROME,
 			chrome_user_data_dir: str = "",
 			chrome_profile_directory: str = "",
 			chromium_user_data_dir: str = "",
@@ -457,7 +456,7 @@ class WebDriverWrapper(object):
 	def __get_new_driver(
 			cls,
 			# 以下オプション
-			browser_id: int = BrowserIds.CHROME.value,
+			browser_id: int = BrowserIds.CHROME,
 			wdm_log_level: int = 0,
 			wdm_print_first_line: bool = False,
 			chrome_user_data_dir: str = "",
@@ -472,23 +471,23 @@ class WebDriverWrapper(object):
 		os.environ['WDM_PRINT_FIRST_LINE'] = wdm_print_first_line.__str__()
 
 		# ブラウザ毎個別処理でドライバ生成
-		if browser_id == cls.BrowserIds.CHROMIUM.value:
+		if browser_id == cls.BrowserIds.CHROMIUM:
 			# Chromium
 			_driver = cls.__get_new_chromium_driver(
 				chromium_user_data_dir=chromium_user_data_dir,
 				chromium_profile_directory=chromium_profile_directory,
 				headless=headless
 			)
-		elif browser_id == cls.BrowserIds.EDGE.value:
+		elif browser_id == cls.BrowserIds.EDGE:
 			# Edge(Chromium版)
 			_driver = cls.__get_new_edge_driver()
-		elif browser_id == cls.BrowserIds.FIREFOX.value:
+		elif browser_id == cls.BrowserIds.FIREFOX:
 			# Firefox
 			_driver = cls.__get_new_firefox_driver()
-		elif browser_id == cls.BrowserIds.IE.value:
+		elif browser_id == cls.BrowserIds.IE:
 			# IE
 			_driver = cls.__get_new_ie_driver()
-		elif browser_id == cls.BrowserIds.OPERA.value:
+		elif browser_id == cls.BrowserIds.OPERA:
 			# Opera
 			_driver = cls.__get_new_opera_driver()
 		else:
@@ -587,41 +586,41 @@ class WebDriverWrapper(object):
 	# ブラウザID取得
 	# ChromeとChromiumを区別できない制約あり
 	def __get_browser_id(cls, driver: __DRIVER_CLASSES) -> int:
-		_browser_id: int = cls.BrowserIds.NONE.value
+		_browser_id: int = cls.BrowserIds.NONE
 		if isinstance(driver, webdriver.Chrome):
 			# Chrome(/ Chromium)
-			_browser_id = cls.BrowserIds.CHROME.value
+			_browser_id = cls.BrowserIds.CHROME
 		elif isinstance(driver, webdriver.Edge):
 			# Edge
-			_browser_id = cls.BrowserIds.EDGE.value
+			_browser_id = cls.BrowserIds.EDGE
 		elif isinstance(driver, webdriver.Firefox):
 			# Firefox
-			_browser_id = cls.BrowserIds.FIREFOX.value
+			_browser_id = cls.BrowserIds.FIREFOX
 		elif isinstance(driver, webdriver.Ie):
 			# IE
-			_browser_id = cls.BrowserIds.IE.value
+			_browser_id = cls.BrowserIds.IE
 		elif isinstance(driver, webdriver.Opera):
 			# Opera
-			_browser_id = cls.BrowserIds.OPERA.value
+			_browser_id = cls.BrowserIds.OPERA
 
 		return _browser_id
 
 	@classmethod
 	# ドライバのクラス取得
-	def __get_driver_class(cls, browser_id: int = BrowserIds.CHROME.value) -> __DRIVER_CLASS_TYPES:
-		if browser_id == cls.BrowserIds.CHROMIUM.value:
+	def __get_driver_class(cls, browser_id: int = BrowserIds.CHROME) -> __DRIVER_CLASS_TYPES:
+		if browser_id == cls.BrowserIds.CHROMIUM:
 			# Chromium
 			_driver_class = webdriver.Edge
-		elif browser_id == cls.BrowserIds.EDGE.value:
+		elif browser_id == cls.BrowserIds.EDGE:
 			# Edge(Chromium)
 			_driver_class = webdriver.Chrome
-		elif browser_id == cls.BrowserIds.FIREFOX.value:
+		elif browser_id == cls.BrowserIds.FIREFOX:
 			# Firefox
 			_driver_class = webdriver.Firefox
-		elif browser_id == cls.BrowserIds.IE.value:
+		elif browser_id == cls.BrowserIds.IE:
 			# IE
 			_driver_class = webdriver.Ie
-		elif browser_id == cls.BrowserIds.OPERA.value:
+		elif browser_id == cls.BrowserIds.OPERA:
 			# Opera
 			_driver_class = webdriver.Opera
 		else:
