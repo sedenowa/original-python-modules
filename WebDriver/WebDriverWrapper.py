@@ -97,7 +97,8 @@ class WebDriverWrapper(object):
 		self.__id: Optional[int] = self.__get_unique_id()
 
 		# インスタンス毎の一時データ格納用ディレクトリ
-		self.__temporary_directory: Optional[str] = self.__make_temporary_directory(catch_exception=catch_exception, output_trace=output_trace)
+		self.__temporary_directory: Optional[str] = \
+			self.__make_temporary_directory(catch_exception=catch_exception, output_trace=output_trace)
 		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
 		self.__made_temporary_directory_by_myself: bool = (self.__temporary_directory is not None)
 
@@ -587,20 +588,19 @@ class WebDriverWrapper(object):
 	# ChromeとChromiumを区別できない制約あり
 	def __get_browser_id(cls, driver: __DRIVER_CLASSES) -> int:
 		_browser_id: int = cls.BrowserIds.NONE.value
-		_driver_class_type: cls.__DRIVER_CLASS_TYPES = type(driver)
-		if _driver_class_type is type(webdriver.Chrome):
+		if isinstance(driver, webdriver.Chrome):
 			# Chrome(/ Chromium)
 			_browser_id = cls.BrowserIds.CHROME.value
-		elif _driver_class_type is type(webdriver.Edge):
+		elif isinstance(driver, webdriver.Edge):
 			# Edge
 			_browser_id = cls.BrowserIds.EDGE.value
-		elif _driver_class_type is type(webdriver.Firefox):
+		elif isinstance(driver, webdriver.Firefox):
 			# Firefox
 			_browser_id = cls.BrowserIds.FIREFOX.value
-		elif _driver_class_type is type(webdriver.Ie):
+		elif isinstance(driver, webdriver.Ie):
 			# IE
 			_browser_id = cls.BrowserIds.IE.value
-		elif _driver_class_type is type(webdriver.Opera):
+		elif isinstance(driver, webdriver.Opera):
 			# Opera
 			_browser_id = cls.BrowserIds.OPERA.value
 
