@@ -508,6 +508,7 @@ class WebDriverWrapper(object):
 			chrome_user_data_dir: str = "",
 			chrome_profile_directory: str = "",
 			headless: bool = False,
+			catch_exception: bool = False,
 			output_trace: bool = True
 	) -> Optional[webdriver.Chrome]:
 		_options = webdriver.ChromeOptions()
@@ -522,9 +523,15 @@ class WebDriverWrapper(object):
 
 		try:
 			_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=_options)
-		except:
-			if output_trace:
-				traceback.print_exc()
+		except Exception as e:
+			if catch_exception:
+				# 例外をcatchする場合
+				if output_trace:
+					# トレースを出力
+					traceback.print_exc()
+			else:
+				# 例外をcatchしない場合はそのままraise
+				raise e
 
 		return _driver
 
