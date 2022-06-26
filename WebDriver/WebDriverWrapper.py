@@ -85,9 +85,11 @@ class WebDriverWrapper(object):
 		self.__browser_id: int = browser_id
 
 		# モジュールファイルの絶対パス
-		self.__abspath_of_this_module: str = inspect.getfile(self.__class__)
+		_abspath_of_this_module: str = inspect.getfile(self.__class__)
 		# モジュールファイルの格納ディレクトリ
-		self.__abspath_directory_of_this_module: str = os.path.dirname(self.__abspath_of_this_module)
+		self.__abspath_directory_of_this_module: str = os.path.dirname(_abspath_of_this_module)
+		# モジュールファイルのファイル名
+		self.__filename_of_this_module: str = os.path.basename(_abspath_of_this_module)
 		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ
 		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "_temp"
 
@@ -95,7 +97,7 @@ class WebDriverWrapper(object):
 		self.__id: Optional[int] = self.__get_unique_id()
 
 		# インスタンス毎の一時データ格納用ディレクトリ
-		self.__temporary_directory: Optional[str] = self.__make_temporary_directory()
+		self.__temporary_directory: Optional[str] = self.__make_temporary_directory(catch_exception=catch_exception, output_trace=output_trace)
 		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
 		self.__made_temporary_directory_by_myself: bool = (self.__temporary_directory is not None)
 
@@ -173,7 +175,6 @@ class WebDriverWrapper(object):
 		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ削除(可能なら)
 		if os.path.exists(self.__abspath_temp_directory_of_this_module):
 			_contents: List[str] = os.listdir(self.__abspath_temp_directory_of_this_module)
-			print(_contents)
 			if len(_contents) == 0:
 				# 中身が空であれば削除
 				os.rmdir(self.__abspath_temp_directory_of_this_module)
