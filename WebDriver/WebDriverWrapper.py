@@ -95,25 +95,9 @@ class WebDriverWrapper(object):
 		self.__id: Optional[int] = self.__get_unique_id()
 
 		# インスタンス毎の一時データ格納用ディレクトリ
-		self.__temporary_directory: str = \
-			self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
+		self.__temporary_directory: Optional[str] = self.__make_temporary_directory()
 		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
-		self.__made_temporary_directory_by_myself: bool = False
-
-		if not os.path.exists(self.__temporary_directory):
-			try:
-				# データ保存領域作成
-				os.makedirs(self.__temporary_directory)
-				self.__made_temporary_directory_by_myself = True
-			except Exception as e:
-				if catch_exception:
-					# 例外をcatchする場合
-					if output_trace:
-						# トレースを出力
-						traceback.print_exc()
-				else:
-					# 例外をcatchしない場合はそのままraise
-					raise e
+		self.__made_temporary_directory_by_myself: bool = (self.__temporary_directory is not None)
 
 	# 利用可能なIDを探索
 	def __get_unique_id(self) -> Optional[int]:
@@ -153,6 +137,30 @@ class WebDriverWrapper(object):
 				_iter += 1
 
 		# 見つからなかった場合
+		return None
+
+	# インスタンス毎の一時データ格納用ディレクトリ生成
+	def __make_temporary_directory(self, catch_exception: bool = False, output_trace: bool = True) -> Optional[str]:
+		_temporary_directory: str = self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
+
+		# インスタンス毎の一時データ格納用ディレクトリ生成
+		if not os.path.exists(_temporary_directory):
+			try:
+				# データ保存領域作成
+				os.makedirs(_temporary_directory)
+				self.__made_temporary_directory_by_myself = True
+				return _temporary_directory
+			except Exception as e:
+				if catch_exception:
+					# 例外をcatchする場合
+					if output_trace:
+						# トレースを出力
+						traceback.print_exc()
+				else:
+					# 例外をcatchしない場合はそのままraise
+					raise e
+
+		# 生成できなければNoneを返却
 		return None
 
 	# デストラクタ
