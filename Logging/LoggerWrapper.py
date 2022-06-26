@@ -9,7 +9,7 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 from datetime import date, datetime, timedelta
-from typing import Optional, List
+from typing import Optional
 
 
 class LoggerWrapper(object):
@@ -245,14 +245,14 @@ class LoggerWrapper(object):
 
 	@classmethod
 	# 指定した日付を含む、過去のファイルをリストアップ
-	def __list_up_old_files_by_date(cls, directory_path: str, delete_date_to: date) -> List[str]:
+	def __list_up_old_files_by_date(cls, directory_path: str, delete_date_to: date) -> list[str]:
 		_old_file_list = []
 		# ディレクトリの存在チェック
 		if not os.path.exists(directory_path):
 			return _old_file_list
 
 		# ファイル一覧取得・チェック
-		_file_or_directory_name_list: List[str] = os.listdir(directory_path)
+		_file_or_directory_name_list: list[str] = os.listdir(directory_path)
 		for _file_or_directory_name in _file_or_directory_name_list:
 			_file_or_directory_full_path: str = directory_path + "\\" + _file_or_directory_name
 
