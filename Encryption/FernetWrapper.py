@@ -1,6 +1,5 @@
 from cryptography.fernet import Fernet
 from typing import Any
-from typing import Optional
 
 
 class FernetWrapper(Fernet):
@@ -156,14 +155,14 @@ class FernetWrapper(Fernet):
 	# 最後に暗号化/復号したデータの更新
 	def __set_last_data(
 			self,
-			str_to_encrypt: Optional[str] = None,
-			bytes_to_encrypt: Optional[bytes] = None,
-			encrypted_bytes: Optional[bytes] = None,
-			encrypted_str: Optional[str] = None,
-			str_to_decrypt: Optional[str] = None,
-			bytes_to_decrypt: Optional[bytes] = None,
-			decrypted_bytes: Optional[bytes] = None,
-			decrypted_str: Optional[str] = None
+			str_to_encrypt: str | None = None,
+			bytes_to_encrypt: bytes | None = None,
+			encrypted_bytes: bytes | None = None,
+			encrypted_str: str | None = None,
+			str_to_decrypt: str | None = None,
+			bytes_to_decrypt: bytes | None = None,
+			decrypted_bytes: bytes | None = None,
+			decrypted_str: str | None = None
 	):
 		if str_to_encrypt is not None:
 			self.__last_str_to_encrypt = str_to_encrypt
