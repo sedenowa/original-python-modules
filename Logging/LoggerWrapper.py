@@ -9,7 +9,6 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 from datetime import date, datetime, timedelta
-from typing import Optional
 
 
 class LoggerWrapper(object):
@@ -39,7 +38,7 @@ class LoggerWrapper(object):
 			backup_count: int = 10
 	):
 		# モジュール個別のロガーを生成
-		self.__logger: Optional[Logger] = self.__get_new_logger(
+		self.__logger: Logger | None = self.__get_new_logger(
 			name=module_name,
 			logfile_dir=logfile_dir,
 			logfile_filename_header=logfile_filename_header,
@@ -74,8 +73,8 @@ class LoggerWrapper(object):
 			log_rotate: bool = True,
 			max_bytes: int = 1000000,
 			backup_count: int = 10
-	) -> Optional[Logger]:
-		_logger: Optional[Logger] = None
+	) -> Logger | None:
+		_logger: Logger | None = None
 		try:
 			# generate logger
 			_logger: Logger = getLogger(name)
