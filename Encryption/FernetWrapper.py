@@ -1,6 +1,7 @@
 from cryptography.fernet import Fernet
 from typing import Tuple
 from typing import Any
+from typing import Optional
 
 
 class FernetWrapper(Fernet):
@@ -66,16 +67,20 @@ class FernetWrapper(Fernet):
 
 		# 要すれば記録
 		if save:
-			self.__last_str_to_encrypt = _str_to_encrypt
-			self.__last_bytes_to_encrypt = _bytes_to_encrypt
-			self.__last_encrypted_bytes = _encrypted_bytes
-			self.__last_encrypted_str = _encrypted_str
+			self.__set_last_data(
+				str_to_encrypt=_str_to_encrypt,
+				bytes_to_encrypt=_bytes_to_encrypt,
+				encrypted_bytes=_encrypted_bytes,
+				encrypted_str=_encrypted_str
+			)
 		else:
 			# 記録不要な場合は各メンバ変数初期化
-			self.__last_str_to_encrypt = ""
-			self.__last_bytes_to_encrypt = b""
-			self.__last_encrypted_bytes = b""
-			self.__last_encrypted_str = ""
+			self.__set_last_data(
+				str_to_encrypt="",
+				bytes_to_encrypt=b"",
+				encrypted_bytes=b"",
+				encrypted_str=""
+			)
 
 		# 指定の形式で返却(str | bytes | Tuple[str, bytes])
 		if return_as_str:
@@ -148,6 +153,35 @@ class FernetWrapper(Fernet):
 			_source_bytes = source
 
 		return _source_str, _source_bytes
+
+	#
+	def __set_last_data(
+			self,
+			str_to_encrypt: Optional[str] = None,
+			bytes_to_encrypt: Optional[bytes] = None,
+			encrypted_bytes: Optional[bytes] = None,
+			encrypted_str: Optional[str] = None,
+			str_to_decrypt: Optional[str] = None,
+			bytes_to_decrypt: Optional[bytes] = None,
+			decrypted_bytes: Optional[bytes] = None,
+			decrypted_str: Optional[str] = None
+	):
+		if str_to_encrypt is not None:
+			self.__last_str_to_encrypt = str_to_encrypt
+		if bytes_to_encrypt is not None:
+			self.__last_bytes_to_encrypt = bytes_to_encrypt
+		if encrypted_bytes is not None:
+			self.__last_encrypted_bytes = encrypted_bytes
+		if encrypted_str is not None:
+			self.__last_encrypted_str = encrypted_str
+		if str_to_decrypt is not None:
+			self.__last_str_to_decrypt = str_to_decrypt
+		if bytes_to_decrypt is not None:
+			self.__last_bytes_to_decrypt = bytes_to_decrypt
+		if decrypted_bytes is not None:
+			self.__last_decrypted_bytes = decrypted_bytes
+		if decrypted_str is not None:
+			self.__last_decrypted_str = decrypted_str
 
 	# 最後に暗号化した文字列/バイト列(暗号化前)
 	# デフォルトでは文字列を返却
