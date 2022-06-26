@@ -58,17 +58,8 @@ class FernetWrapper(Fernet):
 		# 暗号化前のバイト列(初期化)
 		_bytes_to_encrypt: bytes = b""
 
-		# 入力チェック
-		if type(source_to_encrypt) is str:
-			# 入力文字列はそのまま
-			_str_to_encrypt = source_to_encrypt
-			# 入力文字列をバイト列に変換
-			_bytes_to_encrypt = source_to_encrypt.encode(encoding=encoding)
-		else:
-			# 入力バイト列を文字列に変換
-			_str_to_encrypt = source_to_encrypt.decode(encoding=encoding)
-			# 入力バイト列はそのまま
-			_bytes_to_encrypt = source_to_encrypt
+		# 型変換(str <-> bytes)
+		_str_to_encrypt, _bytes_to_encrypt = self.get_str_and_bytes(source=source_to_encrypt, encoding=encoding)
 
 		# バイト列を暗号化されたバイト列に変換
 		_encrypted_bytes: bytes = super().encrypt(data=_bytes_to_encrypt)
@@ -112,17 +103,8 @@ class FernetWrapper(Fernet):
 		# 復号前のバイト列(初期化)
 		_bytes_to_decrypt: bytes = b""
 
-		# 入力チェック
-		if type(source_to_decrypt) is str:
-			# 入力文字列はそのまま
-			_str_to_decrypt = source_to_decrypt
-			# 入力文字列をバイト列に変換
-			_bytes_to_decrypt = source_to_decrypt.encode(encoding=encoding)
-		else:
-			# 入力バイト列を文字列に変換
-			_str_to_decrypt = source_to_decrypt.decode(encoding=encoding)
-			# 入力バイト列はそのまま
-			_bytes_to_decrypt = source_to_decrypt
+		# 型変換(str <-> bytes)
+		_str_to_decrypt, _bytes_to_decrypt = self.get_str_and_bytes(source=source_to_decrypt, encoding=encoding)
 
 		# 暗号化されたバイト列を復号
 		_decrypted_bytes: bytes = super().decrypt(_bytes_to_decrypt)
