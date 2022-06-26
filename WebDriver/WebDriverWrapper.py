@@ -16,7 +16,7 @@ from webdriver_manager.opera import OperaDriverManager
 
 # other
 from typing import Union
-from typing import Optional
+# from typing import Optional
 from enum import IntEnum
 import traceback
 import os
@@ -92,10 +92,10 @@ class WebDriverWrapper(object):
 		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "_temp"
 
 		# メンバ変数としてIDを設定、保持
-		self.__id: Optional[int] = self.__get_unique_id()
+		self.__id: int | None = self.__get_unique_id()
 
 		# インスタンス毎の一時データ格納用ディレクトリ
-		self.__temporary_directory: Optional[str] = \
+		self.__temporary_directory: str | None = \
 			self.__make_temporary_directory(catch_exception=catch_exception, output_trace=output_trace)
 		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
 		self.__made_temporary_directory_by_myself: bool = (self.__temporary_directory is not None)
@@ -103,7 +103,7 @@ class WebDriverWrapper(object):
 	# 利用可能なIDを探索
 	def __get_unique_id(
 			self
-	) -> Optional[int]:
+	) -> int | None:
 		_is_id_set: bool = False
 
 		# デフォルトではインスタンスのidを取得・設定
@@ -147,7 +147,7 @@ class WebDriverWrapper(object):
 			self,
 			catch_exception: bool = False,
 			output_trace: bool = True
-	) -> Optional[str]:
+	) -> str | None:
 		_temporary_directory: str = self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
 
 		# インスタンス毎の一時データ格納用ディレクトリ生成
@@ -206,9 +206,9 @@ class WebDriverWrapper(object):
 			# 独自追加
 			catch_exception: bool = True,
 			output_trace: bool = True
-	) -> Optional[WebElement]:
+	) -> WebElement | None:
 		# デフォルト返却値
-		_found_element: Optional[WebElement] = None
+		_found_element: WebElement | None = None
 
 		# ドライバが初期化されていない場合
 		if self.driver is None:
@@ -544,7 +544,7 @@ class WebDriverWrapper(object):
 			headless: bool = False,
 			catch_exception: bool = False,
 			output_trace: bool = True
-	) -> Optional[webdriver.Chrome]:
+	) -> webdriver.Chrome | None:
 		_options = webdriver.ChromeOptions()
 		if chrome_user_data_dir != "" and os.path.exists(chrome_user_data_dir) and chrome_profile_directory != "":
 			_options.add_argument("--user-data-dir=" + chrome_user_data_dir)
@@ -553,7 +553,7 @@ class WebDriverWrapper(object):
 		if headless:
 			_options.add_argument("--headless")
 
-		_driver: Optional[webdriver.Chrome] = None
+		_driver: webdriver.Chrome | None = None
 
 		try:
 			_driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=_options)
@@ -577,7 +577,7 @@ class WebDriverWrapper(object):
 			chromium_user_data_dir: str = "",
 			chromium_profile_directory: str = "",
 			headless: bool = False
-	) -> Optional[webdriver.Chrome]:
+	) -> webdriver.Chrome | None:
 		_options = webdriver.ChromeOptions()
 		if chromium_user_data_dir != "" and chromium_profile_directory != "":
 			if os.path.exists(chromium_user_data_dir):
@@ -593,7 +593,7 @@ class WebDriverWrapper(object):
 	# TODO:動作確認
 	def __get_new_edge_driver(
 			cls
-	) -> Optional[webdriver.Edge]:
+	) -> webdriver.Edge | None:
 		_driver = webdriver.Edge(service=Service(EdgeChromiumDriverManager().install()))
 		return _driver
 
@@ -602,7 +602,7 @@ class WebDriverWrapper(object):
 	# TODO:動作確認
 	def __get_new_firefox_driver(
 			cls
-	) -> Optional[webdriver.Firefox]:
+	) -> webdriver.Firefox | None:
 		_driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
 		return _driver
 
@@ -611,7 +611,7 @@ class WebDriverWrapper(object):
 	# TODO:動作確認
 	def __get_new_ie_driver(
 			cls
-	) -> Optional[webdriver.Ie]:
+	) -> webdriver.Ie | None:
 		_driver = webdriver.Ie(IEDriverManager().install())
 		return _driver
 
@@ -620,7 +620,7 @@ class WebDriverWrapper(object):
 	# TODO:動作確認
 	def __get_new_opera_driver(
 			cls
-	) -> Optional[webdriver.Opera]:
+	) -> webdriver.Opera | None:
 		_driver = webdriver.Opera(executable_path=OperaDriverManager().install())
 		return _driver
 
@@ -713,13 +713,13 @@ class WebDriverWrapper(object):
 		# 入力チェック(min_num)
 		try:
 			_min_num = float(min_num)
-		except:
+		except ValueError:
 			_min_num = 0.0
 
 		# 入力チェック(max_num)
 		try:
 			_max_num = float(max_num)
-		except:
+		except ValueError:
 			_max_num = 0.0
 
 		# 範囲制限
