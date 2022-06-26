@@ -53,11 +53,9 @@ class FernetWrapper(Fernet):
 			return_as_str: bool = False,
 			return_as_bytes: bool = True
 	) -> str | bytes | Tuple[str, bytes]:
-		# 暗号化前の文字列(初期化)
+		# 暗号化前の文字列/バイト列(初期化)
 		_str_to_encrypt: str = ""
-		# 暗号化前のバイト列(初期化)
 		_bytes_to_encrypt: bytes = b""
-
 		# 型変換(str <-> bytes)
 		_str_to_encrypt, _bytes_to_encrypt = self.get_str_and_bytes(source=source_to_encrypt, encoding=encoding)
 
@@ -98,11 +96,9 @@ class FernetWrapper(Fernet):
 			return_as_str: bool = True,
 			return_as_bytes: bool = False
 	) -> str | bytes | Tuple[str, bytes]:
-		# 復号前の文字列(初期化)
+		# 復号前の文字列/バイト列(初期化)
 		_str_to_decrypt: str = ""
-		# 復号前のバイト列(初期化)
 		_bytes_to_decrypt: bytes = b""
-
 		# 型変換(str <-> bytes)
 		_str_to_decrypt, _bytes_to_decrypt = self.get_str_and_bytes(source=source_to_decrypt, encoding=encoding)
 
