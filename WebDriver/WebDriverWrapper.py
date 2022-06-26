@@ -15,8 +15,6 @@ from webdriver_manager.microsoft import IEDriverManager
 from webdriver_manager.opera import OperaDriverManager
 
 # other
-from typing import Union
-# from typing import Optional
 from enum import IntEnum
 import traceback
 import os
@@ -30,22 +28,20 @@ import inspect
 # Original WebDriver Wrapper Class
 class WebDriverWrapper(object):
 	# possible driver classes
-	__DRIVER_CLASSES = Union[
-		webdriver.Chrome,
-		webdriver.Edge,
-		webdriver.Firefox,
-		webdriver.Ie,
-		webdriver.Opera
-	]
+	__DRIVER_CLASSES = \
+		webdriver.Chrome \
+		| webdriver.Edge \
+		| webdriver.Firefox \
+		| webdriver.Ie \
+		| webdriver.Opera
 
 	# possible driver classes
-	__DRIVER_CLASS_TYPES = Union[
-		type(webdriver.Chrome),
-		type(webdriver.Edge),
-		type(webdriver.Firefox),
-		type(webdriver.Ie),
-		type(webdriver.Opera)
-	]
+	__DRIVER_CLASS_TYPES = \
+		type(webdriver.Chrome) \
+		| type(webdriver.Edge) \
+		| type(webdriver.Firefox) \
+		| type(webdriver.Ie) \
+		| type(webdriver.Opera)
 
 	# CONST VALUES
 	class BrowserIds(IntEnum):
