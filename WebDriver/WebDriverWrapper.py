@@ -84,9 +84,6 @@ class WebDriverWrapper(object):
 		# ブラウザID保存
 		self.__browser_id: int = browser_id
 
-		# メンバ変数としてIDを設定、保持
-		self.__set_id()
-
 		# モジュールファイルの絶対パス
 		self.__abspath_of_this_module: str = inspect.getfile(self.__class__)
 		# モジュールファイルの格納ディレクトリ
@@ -94,11 +91,16 @@ class WebDriverWrapper(object):
 		# インスタンス毎の一時データ格納用ディレクトリの格納用ディレクトリ
 		self.__abspath_temp_directory_of_this_module: str = self.__abspath_directory_of_this_module + "\\" + "temp"
 
+		# メンバ変数としてIDを設定、保持
+		self.__id: Optional[int] = self.__get_unique_id()
+
 		# 一時利用用のデータ保存領域
 		# [Dir of this module]]\temp\[id]\
 		self.__temporary_directory: str = \
 			self.__abspath_temp_directory_of_this_module + "\\" + str(self.__id)
+		# 自身のインスタンスで一時保存用ディレクトリを生成したかどうか
 		self.__made_temporary_directory_by_myself: bool = False
+
 		if not os.path.exists(self.__temporary_directory):
 			try:
 				# データ保存領域作成
@@ -114,9 +116,45 @@ class WebDriverWrapper(object):
 					# 例外をcatchしない場合はそのままraise
 					raise e
 
-	# メンバ変数としてIDを設定、保持
-	def __set_id(self):
-		self.__id: int = id(self)
+	# 利用可能なIDを探索
+	def __get_unique_id(self) -> Optional[int]:
+		_is_id_set: bool = False
+
+		# デフォルトではインスタンスのidを取得・設定
+		_id: int = id(self)
+
+		# 一時利用用のデータ保存領域のパス
+		_temporary_directory: str = \
+			self.__abspath_temp_directory_of_this_module + "\\" + str(_id)
+
+		# 探索準備
+		_max_iter: int = 100
+		_iter: int = 1
+
+		# 探索
+		while _iter < _max_iter:
+			if not os.path.exists(_temporary_directory):
+				# 未使用のidを発見
+				return _id
+			else:
+				# 未使用のidを探索
+				# 新たに自動生成するidの桁数を、現在のidと揃える
+				_digit: int = len(str(_id))
+				# 最低3桁
+				_digit = max(3, _digit)
+				# 最大100桁
+				_digit = min(100, _digit)
+
+				_id = random.randrange(10**(_digit - 1), 10**_digit)
+				# 一時利用用のデータ保存領域を再設定
+				_temporary_directory = \
+					self.__abspath_temp_directory_of_this_module + "\\" + str(_id)
+
+				# 次のループへ
+				_iter += 1
+
+		# 見つからなかった場合
+		return None
 
 	# デストラクタ
 	def __del__(self):
