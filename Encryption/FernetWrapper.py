@@ -1,7 +1,9 @@
 from cryptography.fernet import Fernet
 from typing import Any
+from dataclasses import dataclass
 
 
+@dataclass
 class FernetWrapper(Fernet):
 	# コンストラクタ
 	def __init__(

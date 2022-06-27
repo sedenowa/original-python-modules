@@ -5,8 +5,10 @@ from pushbullet import Pushbullet
 from pushbullet import Device
 from typing import BinaryIO
 import traceback
+from dataclasses import dataclass
 
 
+@dataclass
 class PushbulletWrapper(Pushbullet):
 	# コンストラクタ
 	def __init__(

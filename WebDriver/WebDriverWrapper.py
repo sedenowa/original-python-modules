@@ -23,8 +23,10 @@ import time
 import urllib.parse
 import random
 import inspect
+from dataclasses import dataclass
 
 
+@dataclass
 # Original WebDriver Wrapper Class
 class WebDriverWrapper(object):
 	# possible driver classes

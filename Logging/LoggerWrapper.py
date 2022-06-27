@@ -9,8 +9,10 @@ from logging.handlers import RotatingFileHandler
 import sys
 import os
 from datetime import date, datetime, timedelta
+from dataclasses import dataclass
 
 
+@dataclass
 class LoggerWrapper(object):
 	# ログフォーマットデフォルト値
 	__default_formatter_str: str = "%(asctime)s: %(levelname)s: %(filename)s, L%(lineno)d (%(funcName)s()) %(message)s"
