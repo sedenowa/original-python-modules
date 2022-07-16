@@ -4,6 +4,7 @@
 
 # selenium
 from selenium import webdriver
+from selenium.common import NoSuchWindowException
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
@@ -413,6 +414,19 @@ class WebDriverWrapper(object):
 		# 入力チェック
 		if (url == "") or (url in self.driver.current_url):
 			return False
+
+		# 目的のurlが空でないかチェック
+		if url == "":
+			return False
+		else:
+			# 現在のurlが目的のurlであるかチェック
+			try:
+				if url in self.driver.current_url:
+					return False
+			except NoSuchWindowException as e:
+				import traceback
+				traceback.print_exc()
+				return False
 
 		# 要すればクエリ除去
 		if not include_query:
