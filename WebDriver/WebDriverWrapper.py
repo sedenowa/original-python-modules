@@ -484,6 +484,32 @@ class WebDriverWrapper(object):
 
 		return self.driver.current_url
 
+	# 現在居るページを判定
+	def is_at_url(
+			self,
+			url: str,
+			remove_query: bool = True
+	) -> bool:
+		# 要るかどうか判定するurlが空の場合はFalse
+		if url == "":
+			return False
+
+		# 現在のurlを取得
+		_current_url: str = self.get_current_url()
+
+		# 現在のurlが空の場合はFalse
+		if _current_url == "":
+			return False
+
+		# 現在のurlからクエリを除去
+		if remove_query:
+			_current_url = self.remove_query(_current_url)
+
+		# 判定
+		_result: bool = (_current_url in url)
+
+		return _result
+
 	# スクリプト経由でクリックする
 	def click_element(
 			self,
