@@ -35,16 +35,14 @@ class WebDriverWrapper(object):
 		webdriver.Chrome \
 		| webdriver.Edge \
 		| webdriver.Firefox \
-		| webdriver.Ie \
-		| webdriver.Opera
+		| webdriver.Ie
 
 	# possible driver classes
 	__DRIVER_CLASS_TYPES = \
 		type(webdriver.Chrome) \
 		| type(webdriver.Edge) \
 		| type(webdriver.Firefox) \
-		| type(webdriver.Ie) \
-		| type(webdriver.Opera)
+		| type(webdriver.Ie)
 
 	# CONST VALUES
 	class BrowserIds(IntEnum):
@@ -658,8 +656,8 @@ class WebDriverWrapper(object):
 	# TODO:動作確認
 	def __get_new_opera_driver(
 			cls
-	) -> webdriver.Opera | None:
-		_driver = webdriver.Opera(executable_path=OperaDriverManager().install())
+	) -> webdriver.Chrome | None:
+		_driver: webdriver.Chrome = webdriver.Chrome(OperaDriverManager().install())
 		return _driver
 
 	@classmethod
@@ -671,7 +669,7 @@ class WebDriverWrapper(object):
 	) -> int:
 		_browser_id: int = cls.BrowserIds.NONE
 		if isinstance(driver, webdriver.Chrome):
-			# Chrome(/ Chromium)
+			# Chrome(/ Chromium/ Opera)
 			_browser_id = cls.BrowserIds.CHROME
 		elif isinstance(driver, webdriver.Edge):
 			# Edge
@@ -682,9 +680,6 @@ class WebDriverWrapper(object):
 		elif isinstance(driver, webdriver.Ie):
 			# IE
 			_browser_id = cls.BrowserIds.IE
-		elif isinstance(driver, webdriver.Opera):
-			# Opera
-			_browser_id = cls.BrowserIds.OPERA
 
 		return _browser_id
 
@@ -696,10 +691,10 @@ class WebDriverWrapper(object):
 	) -> __DRIVER_CLASS_TYPES:
 		if browser_id == cls.BrowserIds.CHROMIUM:
 			# Chromium
-			_driver_class = webdriver.Edge
+			_driver_class = webdriver.Chrome
 		elif browser_id == cls.BrowserIds.EDGE:
 			# Edge(Chromium)
-			_driver_class = webdriver.Chrome
+			_driver_class = webdriver.Edge
 		elif browser_id == cls.BrowserIds.FIREFOX:
 			# Firefox
 			_driver_class = webdriver.Firefox
@@ -707,8 +702,8 @@ class WebDriverWrapper(object):
 			# IE
 			_driver_class = webdriver.Ie
 		elif browser_id == cls.BrowserIds.OPERA:
-			# Opera
-			_driver_class = webdriver.Opera
+			# Opera(Chromium)
+			_driver_class = webdriver.Chrome
 		else:
 			# Chrome(default)
 			_driver_class = webdriver.Chrome
