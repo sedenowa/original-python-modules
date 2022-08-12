@@ -1,6 +1,7 @@
 # required packages:
 # selenium
 # webdriver-manager
+# Pillow
 
 # selenium
 from selenium import webdriver
@@ -25,6 +26,7 @@ import urllib.parse
 import random
 import inspect
 from dataclasses import dataclass
+from PIL import Image
 
 
 @dataclass
@@ -332,6 +334,54 @@ class WebDriverWrapper(object):
 		self.driver.save_screenshot(save_path)
 
 		return True
+
+	# 全画面のスクリーンショットを保存
+	def save_screen_shot_of_full_screen(
+			self,
+			save_path: str = "screenshot.png",
+			make_directory: bool = True
+	) -> bool:
+		# ドライバが生成されていなければそのまま終了
+		if self.driver is None:
+			return False
+
+		# 保存先ディレクトリの存在チェック
+		_directory_path: str = os.path.dirname(save_path)
+		if (_directory_path == "") or os.path.exists(_directory_path):
+			# ディレクトリの指定がないか、指定ディレクトリが存在
+			pass
+		elif make_directory:
+			# 指定ディレクトリが存在せず、ディレクトリ作成したい場合
+			os.makedirs(_directory_path)
+		else:
+			# 指定ディレクトリが存在せず、ディレクトリ作成もしない
+			return False
+
+		# スクリーンショット保存
+		# TODO
+
+		return True
+	@staticmethod
+	# use Pillow.Image
+	def _comcat_images(image_base: Image, image_to_add: Image) -> Image:
+		# TODO
+		pass
+
+	@staticmethod
+	def __make_directory_if_not_exist(
+			directory_path: str
+	) -> bool:
+		# 保存先ディレクトリの存在チェック
+		if directory_path == "":
+			# ディレクトリの指定がない
+			return False
+		elif os.path.exists(directory_path):
+			# 指定ディレクトリが存在
+			return True
+
+		# 指定ディレクトリが存在せず、ディレクトリ作成もしない
+		os.makedirs(directory_path)
+		return False
 
 	# 読み込み完了待機
 	def wait_load_complete(
