@@ -767,10 +767,34 @@ class WebDriverWrapper(object):
 	# ランダムな時間待機(下限と上限を指定)
 	def wait_random_sec(
 			cls,
-			min_sec: float = 1.0,
-			max_sec: float = 3.0,
+			min_sec: float | None = None,
+			max_sec: float | None = None,
 			print_sec: bool = False
 	):
+		# デフォルト値
+		_default_min_sec: float = 1.0
+		_default_max_sec: float = 3.0
+
+		# 入力チェック
+		# 入力チェック(min_sec)
+		try:
+			min_sec = float(min_sec)
+			# マイナスの場合は0に丸める
+			if min_sec < 0:
+				min_sec = 0.0
+		except ValueError:
+			min_sec = 0.0
+
+		# 入力チェック(max_num)
+		try:
+			max_sec = float(max_sec)
+			# マイナスの場合は0に丸める
+			if max_sec < 0:
+				max_sec = 0.0
+		except ValueError:
+			# 指定なしの場合はデフォルト値に丸める
+			max_sec = _default_max_sec
+
 		# スリープ時間計算
 		_random_sleep_sec: float = cls._calc_random_num(min_num=min_sec, max_num=max_sec)
 
