@@ -442,15 +442,10 @@ class WebDriverWrapper(object):
 					)
 				)
 
-				print(_width_to_crop)
-				print(_height_to_crop)
-				print()
-
 				# スクリーンショット結合
 				_screenshot_image = self._concat_images(
 					image_base=_screenshot_image,
 					image_to_add=_screenshot_image_to_add,
-					# offset=_vertical_scroll_to,
 					concat_vertically=True
 				)
 
