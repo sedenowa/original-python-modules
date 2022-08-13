@@ -345,7 +345,9 @@ class WebDriverWrapper(object):
 			crop_vertical_scroll_bar: bool = True,
 			maximize_window: bool = True,
 			window_width: int | None = None,
-			window_height: int | None = None
+			window_height: int | None = None,
+			interval_between_scroll_to_end_of_page: float = 0.0,
+			interval_between_scroll_to_get_screenshot: float = 0.0
 	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
@@ -382,7 +384,9 @@ class WebDriverWrapper(object):
 			self.get_driver().set_window_size(window_width, window_height)
 
 		# 一度ページを最後まで読み込ませる
-		self._scroll_to_end_of_page(interval_of_scroll=0.0)
+		self._scroll_to_end_of_page(
+			interval_of_scroll=interval_between_scroll_to_end_of_page
+		)
 
 		# コンテンツ全体のサイズ取得
 		_scroll_width, _scroll_height, _inner_width, _inner_height, _client_width, _client_height = \
@@ -419,10 +423,13 @@ class WebDriverWrapper(object):
 
 		# スクロールしながらスクリーンショット結合
 		for _index_horizontal_scroll in range(_required_horizontal_scroll_num):
+			# 目的のスクロール位置(水平方向)を算出
 			_horizontal_scroll_to: int = _index_horizontal_scroll * _client_width
 			for _index_vertical_scroll in range(_required_vertical_scroll_num):
-				# 目的のスクロール位置に移動
+				# 目的のスクロール位置(垂直方向)を算出
 				_vertical_scroll_to: int = _index_vertical_scroll * _client_height
+
+				# 目的の位置にスクロール
 				self.get_driver().execute_script(
 					"window.scrollTo(arguments[0], arguments[1]);",
 					_horizontal_scroll_to,
@@ -432,6 +439,9 @@ class WebDriverWrapper(object):
 				# ループ初回の場合はスキップ
 				if _index_horizontal_scroll == 0 and _index_vertical_scroll == 0:
 					continue
+
+				# インターバル
+				self.wait_sec(sec=interval_between_scroll_to_get_screenshot)
 
 				# ループ初回以外の場合は追加するスクリーンショットを取得
 				_screenshot_image_to_add: Image.Image = self._get_screenshot_image()
