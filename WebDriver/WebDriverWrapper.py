@@ -426,10 +426,10 @@ class WebDriverWrapper(object):
 					# ループの最後の場合は端数部分のサイズを設定
 					_height_to_crop = _fraction_height
 
-				# 要すればスクロールバー分をカット
-				if crop_vertical_scroll_bar:
+				# ループの最後以外、またはループの最後で要すればスクロールバー分をカット
+				if (_index_horizontal_scroll != _required_horizontal_scroll_num - 1) or crop_vertical_scroll_bar:
 					_width_to_crop -= _width_of_horizontal_scroll_bar
-				if crop_horizontal_scroll_bar:
+				if (_index_vertical_scroll != _required_vertical_scroll_num - 1) or crop_horizontal_scroll_bar:
 					_height_to_crop -= _height_of_vertical_scroll_bar
 
 				# 結合用に使う領域を切り取り
