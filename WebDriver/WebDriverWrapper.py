@@ -434,44 +434,48 @@ class WebDriverWrapper(object):
 
 		# コンテンツ全体のサイズ取得
 		_scroll_width, _scroll_height, _, _, _client_width, _client_height = self._get_contents_sizes()
+
 		# スクロール回数算出
 		_required_horizontal_scroll_num: int = (_scroll_width - 1) // _client_width + 1
 		_required_vertical_scroll_num: int = (_scroll_height - 1) // _client_height + 1
 
-		# 比較用バックアップ
-		_previous_scroll_width: int = -1
-		_previous_scroll_height: int = -1
-		_previous_client_width: int = -1
-		_previous_client_height: int = -1
+		# 次に移動すべきスクロール位置
+		_horizontal_scroll_to: int = 0
+		_vertical_scroll_to: int = 0
+		# 次に移動すべきスクロール位置のバックアップ(初期値は上記とずらしておく)
+		_previous_horizontal_scroll_to: int = -1
+		_previous_vertical_scroll_to: int = -1
 
-		# ページのコンテンツサイズに変化が無くなるまでループ
-		while (_previous_scroll_width != _scroll_width) or \
-				(_previous_scroll_height != _scroll_height) or \
-				(_previous_client_width != _client_width) or \
-				(_previous_client_height != _client_height):
-			# スクロール回数算出
-			_required_horizontal_scroll_num: int = (_scroll_width - 1) // _client_width + 1
-			_required_vertical_scroll_num: int = (_scroll_height - 1) // _client_height + 1
-			# 一旦最後まで読み込ませる
-			for _index_horizontal_scroll in range(_required_horizontal_scroll_num):
-				_horizontal_scroll_to: int = _index_horizontal_scroll * _client_width
-				for _index_vertical_scroll in range(_required_vertical_scroll_num):
-					_vertical_scroll_to: int = _index_vertical_scroll * _client_height
-					self.get_driver().execute_script(
-						"window.scrollTo(arguments[0], arguments[1]);",
-						_horizontal_scroll_to,
-						_vertical_scroll_to
-					)
-					self.wait_sec(interval_of_scroll)
+		# ページのサイズが最大になりそこに到達するまで順にスクロール
+		_timeout_sec: int = 60
+		_start_time: float = time.time()
+		while (_previous_horizontal_scroll_to != _horizontal_scroll_to) or \
+				(_previous_vertical_scroll_to != _vertical_scroll_to):
+			# タイムアウト確認
+			_end_time: float = time.time()
+			if (_end_time - _start_time) > _timeout_sec:
+				break
 
-			# 比較用バックアップ
-			_previous_scroll_width = _scroll_width
-			_previous_scroll_height = _scroll_height
-			_previous_client_width = _client_width
-			_previous_client_height = _client_height
+			# スクロール
+			self.get_driver().execute_script(
+				"window.scrollTo(arguments[0], arguments[1]);",
+				_horizontal_scroll_to,
+				_vertical_scroll_to
+			)
 
-			# 現在のコンテンツ全体のサイズ取得
-			_scroll_width, _scroll_height, _, _, _client_width, _client_height = self._get_contents_sizes()
+			# スクロール操作間のインターバル
+			self.wait_sec(interval_of_scroll)
+
+			# コンテンツ全体のサイズ再取得
+			_scroll_width, _scroll_height, _, _, _, _ = self._get_contents_sizes()
+
+			# 次に移動すべきスクロール位置のバックアップ
+			_previous_horizontal_scroll_to = _horizontal_scroll_to
+			_previous_vertical_scroll_to = _vertical_scroll_to
+
+			# 次に移動すべきスクロール位置を算出
+			_horizontal_scroll_to = min(_scroll_width, _horizontal_scroll_to + _client_width)
+			_vertical_scroll_to = min(_scroll_height, _vertical_scroll_to + _client_height)
 
 	# スクリーンショット取得
 	def _get_screenshot_image(
