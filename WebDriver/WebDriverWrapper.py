@@ -379,7 +379,11 @@ class WebDriverWrapper(object):
 			self,
 			remove_horizontal_scrollbar: bool = False,
 			remove_vertical_scrollbar: bool = False
-	) -> Image.Image:
+	) -> Image.Image | None:
+		# ドライバが生成されていなければそのまま終了
+		if self.driver is None:
+			return None
+
 		# コンテンツ全体のサイズ取得
 		# スクロール込みの全体のサイズ
 		# _scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
@@ -417,7 +421,7 @@ class WebDriverWrapper(object):
 			offset: int = None,
 			concat_vertically: bool = True,
 			align_center: bool = False
-	) -> Image.Image:
+	) -> Image.Image | None:
 		# 入力チェック(画像)
 		if not isinstance(image_base, Image.Image):
 			return None
@@ -504,6 +508,34 @@ class WebDriverWrapper(object):
 
 		# 結合後の画像を返却
 		return merged_image
+
+	def _get_contents_sizes(
+			self
+	) -> tuple[int, int, int, int, int, int] | None:
+		# ドライバが生成されていなければそのまま終了
+		if self.driver is None:
+			return None
+
+		# スクロール込みの全体のサイズ
+		_scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
+		_scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
+		# スクロールバー含むウィンドウに表示中のサイズ
+		_inner_width = self.driver.execute_script("return window.innerWidth;")
+		_inner_height = self.driver.execute_script("return window.innerHeight;")
+		# スクロールバー抜いた表示中コンテンツのサイズ
+		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
+		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+
+		_return_tuple: tuple[int, int, int, int, int, int] = (
+			_scroll_width,
+			_scroll_height,
+			_inner_width,
+			_inner_height,
+			_client_width,
+			_client_height
+		)
+
+		return _return_tuple
 
 	@staticmethod
 	def __make_directory_if_not_exist(
