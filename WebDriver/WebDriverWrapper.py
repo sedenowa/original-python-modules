@@ -367,6 +367,7 @@ class WebDriverWrapper(object):
 
 		return True
 
+	# スクリーンショット取得
 	def _get_screenshot_image(
 			self,
 			remove_horizontal_scrollbar: bool = False,
