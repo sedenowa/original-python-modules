@@ -365,6 +365,40 @@ class WebDriverWrapper(object):
 			# 指定ディレクトリが存在せず、ディレクトリ作成もしない
 			return False
 
+		# スクリーンショット取得
+		_screenshot_image: Image.Image | None = \
+			self.get_screen_shot_of_full_screen(
+				crop_horizontal_scroll_bar=crop_horizontal_scroll_bar,
+				crop_vertical_scroll_bar=crop_vertical_scroll_bar,
+				maximize_window=maximize_window,
+				window_width=window_width,
+				window_height=window_height,
+				interval_between_scroll_to_end_of_page=interval_between_scroll_to_end_of_page,
+				interval_between_scroll_to_get_screenshot=interval_between_scroll_to_get_screenshot
+			)
+
+		# スクリーンショット取得結果確認
+		if _screenshot_image is None:
+			return False
+
+		# スクリーンショット保存
+		_screenshot_image.save(save_path)
+		return True
+
+	def get_screen_shot_of_full_screen(
+			self,
+			crop_horizontal_scroll_bar: bool = True,
+			crop_vertical_scroll_bar: bool = True,
+			maximize_window: bool = True,
+			window_width: int | None = None,
+			window_height: int | None = None,
+			interval_between_scroll_to_end_of_page: float = 0.0,
+			interval_between_scroll_to_get_screenshot: float = 0.0
+	) -> Image.Image | None:
+		# ドライバが生成されていなければそのまま終了
+		if self.driver is None:
+			return None
+
 		# 入力チェック(ウィンドウ幅)
 		if window_width is None:
 			window_width = 0
@@ -480,10 +514,7 @@ class WebDriverWrapper(object):
 					vertical_offset_to_add=_vertical_scroll_to
 				)
 
-		# スクリーンショット保存
-		_screenshot_image.save(save_path)
-
-		return True
+		return _screenshot_image
 
 	# ページ全体を一度最後まで表示させるためにページ最後までスクロール
 	def _scroll_to_end_of_page(
