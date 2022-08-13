@@ -361,15 +361,7 @@ class WebDriverWrapper(object):
 		# スクリーンショット生成
 		self.get_driver().maximize_window()
 		# コンテンツ全体のサイズ取得
-		# スクロール込みの全体のサイズ
-		_scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
-		_scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
-		# スクロールバー含むウィンドウに表示中のサイズ
-		_inner_width = self.driver.execute_script("return window.innerWidth;")
-		_inner_height = self.driver.execute_script("return window.innerHeight;")
-		# スクロールバー抜いた表示中コンテンツのサイズ
-		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
-		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+		_scroll_width, _scroll_height, _inner_width, _inner_height, _client_width, _client_height = self._get_contents_sizes()
 
 		# スクリーンショット保存
 
@@ -385,15 +377,7 @@ class WebDriverWrapper(object):
 			return None
 
 		# コンテンツ全体のサイズ取得
-		# スクロール込みの全体のサイズ
-		# _scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
-		# _scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
-		# スクロールバー含むウィンドウに表示中のサイズ
-		_inner_width = self.driver.execute_script("return window.innerWidth;")
-		_inner_height = self.driver.execute_script("return window.innerHeight;")
-		# スクロールバー抜いた表示中コンテンツのサイズ
-		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
-		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+		_, _, _inner_width, _inner_height, _client_width, _client_height = self._get_contents_sizes()
 
 		# スクリーンショット取得
 		_screenshot_png_bytes: bytes = self.get_driver().get_screenshot_as_png()
@@ -513,18 +497,18 @@ class WebDriverWrapper(object):
 			self
 	) -> tuple[int, int, int, int, int, int] | None:
 		# ドライバが生成されていなければそのまま終了
-		if self.driver is None:
+		if self.get_driver() is None:
 			return None
 
 		# スクロール込みの全体のサイズ
-		_scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
-		_scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
+		_scroll_width: int = self.get_driver().execute_script("return document.body.scrollWidth;")
+		_scroll_height: int = self.get_driver().execute_script("return document.body.scrollHeight;")
 		# スクロールバー含むウィンドウに表示中のサイズ
-		_inner_width = self.driver.execute_script("return window.innerWidth;")
-		_inner_height = self.driver.execute_script("return window.innerHeight;")
+		_inner_width: int = self.get_driver().execute_script("return window.innerWidth;")
+		_inner_height: int = self.get_driver().execute_script("return window.innerHeight;")
 		# スクロールバー抜いた表示中コンテンツのサイズ
-		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
-		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+		_client_width: int = self.get_driver().execute_script("return document.documentElement.clientWidth;")
+		_client_height: int = self.get_driver().execute_script("return document.documentElement.clientHeight;")
 
 		_return_tuple: tuple[int, int, int, int, int, int] = (
 			_scroll_width,
