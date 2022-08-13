@@ -131,7 +131,7 @@ class WebDriverWrapper(object):
 				# 最大100桁
 				_digit = min(100, _digit)
 
-				_id = random.randrange(10**(_digit - 1), 10**_digit)
+				_id = random.randrange(10 ** (_digit - 1), 10 ** _digit)
 				# 一時利用用のデータ保存領域を再設定
 				_temporary_directory = \
 					self.__abspath_temp_directory_of_this_module + "\\" + str(_id)
@@ -369,8 +369,8 @@ class WebDriverWrapper(object):
 		_scroll_width, _scroll_height, _inner_width, _inner_height, _client_width, _client_height = self._get_contents_sizes()
 
 		# スクロールバーの幅
-		_width_of_horizontal_scroll_bar: int = _inner_height - _client_height
-		_height_of_vertical_scroll_bar: int = _inner_width - _client_width
+		_height_of_horizontal_scroll_bar: int = _inner_height - _client_height
+		_width_of_vertical_scroll_bar: int = _inner_width - _client_width
 
 		# スクロール回数算出
 		_required_horizontal_scroll_num = (_scroll_width - 1) // _client_width + 1
@@ -428,9 +428,9 @@ class WebDriverWrapper(object):
 
 				# ループの最後以外、またはループの最後で要すればスクロールバー分をカット
 				if (_index_horizontal_scroll != _required_horizontal_scroll_num - 1) or crop_vertical_scroll_bar:
-					_width_to_crop -= _width_of_horizontal_scroll_bar
+					_width_to_crop -= _width_of_vertical_scroll_bar
 				if (_index_vertical_scroll != _required_vertical_scroll_num - 1) or crop_horizontal_scroll_bar:
-					_height_to_crop -= _height_of_vertical_scroll_bar
+					_height_to_crop -= _height_of_horizontal_scroll_bar
 
 				# 結合用に使う領域を切り取り
 				_screenshot_image_to_add = _screenshot_image_to_add.crop(
@@ -441,6 +441,10 @@ class WebDriverWrapper(object):
 						_client_height
 					)
 				)
+
+				print(_width_to_crop)
+				print(_height_to_crop)
+				print()
 
 				# スクリーンショット結合
 				_screenshot_image = self._concat_images(
@@ -471,7 +475,11 @@ class WebDriverWrapper(object):
 			interval_of_scroll = 0.0
 
 		# コンテンツ全体のサイズ取得
-		_scroll_width, _scroll_height, _, _, _client_width, _client_height = self._get_contents_sizes()
+		_scroll_width, _scroll_height, _client_width, _client_height = \
+			self._get_contents_sizes(
+				get_inner_width=False,
+				get_inner_height=False
+			)
 
 		# スクロール回数算出
 		_required_horizontal_scroll_num: int = (_scroll_width - 1) // _client_width + 1
@@ -505,7 +513,13 @@ class WebDriverWrapper(object):
 			self.wait_sec(interval_of_scroll)
 
 			# コンテンツ全体のサイズ再取得
-			_scroll_width, _scroll_height, _, _, _, _ = self._get_contents_sizes()
+			_scroll_width, _scroll_height = \
+				self._get_contents_sizes(
+					get_inner_width=False,
+					get_inner_height=False,
+					get_client_width=False,
+					get_client_height=False
+				)
 
 			# 次に移動すべきスクロール位置のバックアップ
 			_previous_horizontal_scroll_to = _horizontal_scroll_to
@@ -526,7 +540,11 @@ class WebDriverWrapper(object):
 			return None
 
 		# コンテンツ全体のサイズ取得
-		_, _, _inner_width, _inner_height, _client_width, _client_height = self._get_contents_sizes()
+		_inner_width, _inner_height, _client_width, _client_height = \
+			self._get_contents_sizes(
+				get_scroll_width=False,
+				get_scroll_height=False
+			)
 
 		# スクリーンショット取得
 		_screenshot_png_bytes: bytes = self.get_driver().get_screenshot_as_png()
@@ -648,32 +666,54 @@ class WebDriverWrapper(object):
 	# スクロールバー含むウィンドウに表示中のサイズ(width, height)
 	# スクロールバー抜いた表示中コンテンツのサイズ(width, height)
 	def _get_contents_sizes(
-			self
-	) -> tuple[int, int, int, int, int, int] | None:
+			self,
+			get_scroll_width: bool = True,
+			get_scroll_height: bool = True,
+			get_inner_width: bool = True,
+			get_inner_height: bool = True,
+			get_client_width: bool = True,
+			get_client_height: bool = True
+	) -> tuple[int, ...] | None:
 		# ドライバが生成されていなければそのまま終了
 		if self.get_driver() is None:
 			return None
 
+		_return_list: list[int] = []
 		# スクロール込みの全体のサイズ
-		_scroll_width: int = self.get_driver().execute_script("return document.body.scrollWidth;")
-		_scroll_height: int = self.get_driver().execute_script("return document.body.scrollHeight;")
+		# width
+		if get_scroll_width:
+			_scroll_width: int = self.get_driver().execute_script("return document.body.scrollWidth;")
+			_return_list.append(_scroll_width)
+		# height
+		if get_scroll_height:
+			_scroll_height: int = self.get_driver().execute_script("return document.body.scrollHeight;")
+			_return_list.append(_scroll_height)
+
 		# スクロールバー含むウィンドウに表示中のサイズ
-		_inner_width: int = self.get_driver().execute_script("return window.innerWidth;")
-		_inner_height: int = self.get_driver().execute_script("return window.innerHeight;")
+		# width
+		if get_inner_width:
+			_inner_width: int = self.get_driver().execute_script("return window.innerWidth;")
+			_return_list.append(_inner_width)
+		# height
+		if get_inner_height:
+			_inner_height: int = self.get_driver().execute_script("return window.innerHeight;")
+			_return_list.append(_inner_height)
+
 		# スクロールバー抜いた表示中コンテンツのサイズ
-		_client_width: int = self.get_driver().execute_script("return document.documentElement.clientWidth;")
-		_client_height: int = self.get_driver().execute_script("return document.documentElement.clientHeight;")
+		# width
+		if get_client_width:
+			_client_width: int = self.get_driver().execute_script("return document.documentElement.clientWidth;")
+			_return_list.append(_client_width)
+		# height
+		if get_client_height:
+			_client_height: int = self.get_driver().execute_script("return document.documentElement.clientHeight;")
+			_return_list.append(_client_height)
 
-		_return_tuple: tuple[int, int, int, int, int, int] = (
-			_scroll_width,
-			_scroll_height,
-			_inner_width,
-			_inner_height,
-			_client_width,
-			_client_height
-		)
-
-		return _return_tuple
+		# リストの要素数に応じて返却
+		if len(_return_list) > 0:
+			return tuple(_return_list)
+		else:
+			return None
 
 	@staticmethod
 	def __make_directory_if_not_exist(
