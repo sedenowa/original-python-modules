@@ -528,7 +528,7 @@ class WebDriverWrapper(object):
 		# 入力チェック(interval_of_scroll)
 		try:
 			interval_of_scroll = float(interval_of_scroll)
-		except ValueError:
+		except (ValueError, TypeError):
 			interval_of_scroll = 0.0
 
 		# コンテンツ全体のサイズ取得
@@ -1209,13 +1209,13 @@ class WebDriverWrapper(object):
 		# 入力チェック(min_num)
 		try:
 			_min_num = float(min_num)
-		except ValueError:
+		except (ValueError, TypeError):
 			_min_num = 0.0
 
 		# 入力チェック(max_num)
 		try:
 			_max_num = float(max_num)
-		except ValueError:
+		except (ValueError, TypeError):
 			_max_num = 0.0
 
 		# 範囲制限
@@ -1245,7 +1245,7 @@ class WebDriverWrapper(object):
 			# マイナスの場合は0に丸める
 			if min_sec < 0:
 				min_sec = 0.0
-		except ValueError:
+		except (ValueError, TypeError):
 			min_sec = 0.0
 
 		# 入力チェック(max_num)
@@ -1254,7 +1254,7 @@ class WebDriverWrapper(object):
 			# マイナスの場合は0に丸める
 			if max_sec < 0:
 				max_sec = 0.0
-		except ValueError:
+		except (ValueError, TypeError):
 			# 指定なしの場合はデフォルト値に丸める
 			max_sec = _default_max_sec
 
