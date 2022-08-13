@@ -518,8 +518,8 @@ class WebDriverWrapper(object):
 	# スクリーンショット取得
 	def _get_screenshot_image(
 			self,
-			remove_horizontal_scrollbar: bool = False,
-			remove_vertical_scrollbar: bool = False
+			crop_horizontal_scrollbar: bool = False,
+			crop_vertical_scrollbar: bool = False
 	) -> Image.Image | None:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
@@ -533,13 +533,13 @@ class WebDriverWrapper(object):
 		_screenshot_bytes_io: io.BytesIO = io.BytesIO(_screenshot_png_bytes)
 		_screenshot_image: Image.Image = Image.open(_screenshot_bytes_io)
 
-		if remove_horizontal_scrollbar:
+		if crop_horizontal_scrollbar:
 			if _client_height < _inner_height:
 				_screenshot_image = _screenshot_image.crop(
 					(0, 0, _inner_width, _client_height)
 				)
 
-		if remove_vertical_scrollbar:
+		if crop_vertical_scrollbar:
 			if _client_width < _inner_width:
 				_screenshot_image = _screenshot_image.crop(
 					(0, 0, _client_width, _inner_height)
