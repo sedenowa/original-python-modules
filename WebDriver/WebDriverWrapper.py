@@ -398,6 +398,7 @@ class WebDriverWrapper(object):
 
 		return _screenshot_image
 
+	# 画像の結合
 	@staticmethod
 	def _concat_images(
 			image_base: Image.Image,
@@ -493,6 +494,10 @@ class WebDriverWrapper(object):
 		# 結合後の画像を返却
 		return merged_image
 
+	# 表示中の各種コンテンツサイズを取得(下記の順)
+	# スクロール込みの全体のサイズ(width, height)
+	# スクロールバー含むウィンドウに表示中のサイズ(width, height)
+	# スクロールバー抜いた表示中コンテンツのサイズ(width, height)
 	def _get_contents_sizes(
 			self
 	) -> tuple[int, int, int, int, int, int] | None:
