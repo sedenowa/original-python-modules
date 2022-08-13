@@ -20,6 +20,7 @@ from webdriver_manager.opera import OperaDriverManager
 from enum import IntEnum
 import traceback
 import os
+import io
 import unicodedata
 import time
 import urllib.parse
@@ -357,13 +358,59 @@ class WebDriverWrapper(object):
 			# 指定ディレクトリが存在せず、ディレクトリ作成もしない
 			return False
 
+		# スクリーンショット生成
+		self.get_driver().maximize_window()
+		# コンテンツ全体のサイズ取得
+		# スクロール込みの全体のサイズ
+		_scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
+		_scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
+		# スクロールバー含むウィンドウに表示中のサイズ
+		_inner_width = self.driver.execute_script("return window.innerWidth;")
+		_inner_height = self.driver.execute_script("return window.innerHeight;")
+		# スクロールバー抜いた表示中コンテンツのサイズ
+		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
+		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+
 		# スクリーンショット保存
-		# TODO
 
 		return True
 
+	def _get_screenshot_image(
+			self,
+			remove_horizontal_scrollbar: bool = False,
+			remove_vertical_scrollbar: bool = False
+	) -> Image.Image:
+		# コンテンツ全体のサイズ取得
+		# スクロール込みの全体のサイズ
+		# _scroll_width = self.driver.execute_script("return document.body.scrollWidth;")
+		# _scroll_height = self.driver.execute_script("return document.body.scrollHeight;")
+		# スクロールバー含むウィンドウに表示中のサイズ
+		_inner_width = self.driver.execute_script("return window.innerWidth;")
+		_inner_height = self.driver.execute_script("return window.innerHeight;")
+		# スクロールバー抜いた表示中コンテンツのサイズ
+		_client_width = self.driver.execute_script("return document.documentElement.clientWidth;")
+		_client_height = self.driver.execute_script("return document.documentElement.clientHeight;")
+
+		# スクリーンショット取得
+		_screenshot_png_bytes: bytes = self.get_driver().get_screenshot_as_png()
+		_screenshot_bytes_io: io.BytesIO = io.BytesIO(_screenshot_png_bytes)
+		_screenshot_image: Image.Image = Image.open(_screenshot_bytes_io)
+
+		if remove_horizontal_scrollbar:
+			if _client_height < _inner_height:
+				_screenshot_image = _screenshot_image.crop(
+					(0, 0, _inner_width, _client_height)
+				)
+
+		if remove_vertical_scrollbar:
+			if _client_width < _inner_width:
+				_screenshot_image = _screenshot_image.crop(
+					(0, 0, _client_width, _inner_height)
+				)
+
+		return _screenshot_image
+
 	@staticmethod
-	# use Pillow.Image
 	def _concat_images(
 			image_base: Image.Image,
 			image_to_add: Image.Image,
