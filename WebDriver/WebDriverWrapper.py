@@ -343,6 +343,9 @@ class WebDriverWrapper(object):
 			make_directory: bool = True,
 			crop_horizontal_scroll_bar: bool = True,
 			crop_vertical_scroll_bar: bool = True,
+			maximize_window: bool = True,
+			window_width: int | None = None,
+			window_height: int | None = None
 	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
@@ -360,14 +363,30 @@ class WebDriverWrapper(object):
 			# 指定ディレクトリが存在せず、ディレクトリ作成もしない
 			return False
 
-		# ウィンドウ最大化
-		self.get_driver().maximize_window()
+		# 入力チェック(ウィンドウ幅)
+		if window_width is None:
+			window_width = 0
+		elif window_width < 0:
+			window_width = 0
+
+		# 入力チェック(ウィンドウ高さ)
+		if window_height is None:
+			window_height = 0
+		elif window_height < 0:
+			window_height = 0
+
+		# ウィンドウサイズ変更
+		if maximize_window:
+			self.get_driver().maximize_window()
+		elif window_width > 0 and window_height > 0:
+			self.get_driver().set_window_size(window_width, window_height)
 
 		# 一度ページを最後まで読み込ませる
 		self._scroll_to_end_of_page(interval_of_scroll=0.0)
 
 		# コンテンツ全体のサイズ取得
-		_scroll_width, _scroll_height, _inner_width, _inner_height, _client_width, _client_height = self._get_contents_sizes()
+		_scroll_width, _scroll_height, _inner_width, _inner_height, _client_width, _client_height = \
+			self._get_contents_sizes()
 
 		# スクロールバーの幅
 		_height_of_horizontal_scroll_bar: int = _inner_height - _client_height
@@ -418,14 +437,14 @@ class WebDriverWrapper(object):
 				_screenshot_image_to_add: Image.Image = self._get_screenshot_image()
 
 				# 結合用に使う領域のサイズ算出
-				_width_to_crop: int = _client_width
-				_height_to_crop: int = _client_height
+				_width_to_crop: int = _inner_width
+				_height_to_crop: int = _inner_height
 				if _index_horizontal_scroll == _required_horizontal_scroll_num - 1:
 					# ループの最後の場合は端数部分のサイズを設定
-					_width_to_crop = _fraction_width
+					_width_to_crop = _fraction_width + _width_of_vertical_scroll_bar
 				if _index_vertical_scroll == _required_vertical_scroll_num - 1:
 					# ループの最後の場合は端数部分のサイズを設定
-					_height_to_crop = _fraction_height
+					_height_to_crop = _fraction_height + _height_of_horizontal_scroll_bar
 
 				# ループの最後以外、またはループの最後で要すればスクロールバー分をカット
 				if (_index_horizontal_scroll != _required_horizontal_scroll_num - 1) or crop_vertical_scroll_bar:
