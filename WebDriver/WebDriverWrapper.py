@@ -362,6 +362,7 @@ class WebDriverWrapper(object):
 
 		# ウィンドウ最大化
 		self.get_driver().maximize_window()
+
 		# 一度ページを最後まで読み込ませる
 		self._scroll_to_end_of_page(interval_of_scroll=0.0)
 
@@ -389,7 +390,7 @@ class WebDriverWrapper(object):
 		# 要すればスクロールバー分をカット
 		_width_to_crop: int = _inner_width
 		_height_to_crop: int = _inner_height
-		if crop_vertical_scroll_bar:
+		if crop_horizontal_scroll_bar:
 			_width_to_crop = _client_width
 		if crop_vertical_scroll_bar:
 			_height_to_crop = _client_height
@@ -446,7 +447,8 @@ class WebDriverWrapper(object):
 				_screenshot_image = self._concat_images(
 					image_base=_screenshot_image,
 					image_to_add=_screenshot_image_to_add,
-					concat_vertically=True
+					horizontal_offset_to_add=_horizontal_scroll_to,
+					vertical_offset_to_add=_vertical_scroll_to
 				)
 
 		# スクリーンショット保存
@@ -565,41 +567,83 @@ class WebDriverWrapper(object):
 	def _concat_images(
 			image_base: Image.Image,
 			image_to_add: Image.Image,
-			offset: int = None,
-			concat_vertically: bool = True,
-			align_center: bool = False
+			horizontal_offset_of_base: int | None = None,
+			vertical_offset_of_base: int | None = None,
+			horizontal_offset_to_add: int | None = 0,
+			vertical_offset_to_add: int | None = None,
 	) -> Image.Image | None:
 		# 入力チェック(画像)
 		if not isinstance(image_base, Image.Image):
-			return None
+			if not isinstance(image_to_add, Image.Image):
+				# いずれの画像も不正
+				return None
+			else:
+				# 結合用の画像のみ正常
+				return image_to_add
 		elif not isinstance(image_to_add, Image.Image):
+			# ベース用の画像のみ正常
 			return image_base
 
-		# 入力チェック(結合用オフセット)
-		if offset is None:
-			# 指定がない場合はそのまま並べる
-			if concat_vertically:
-				offset = image_base.height
-			else:
-				offset = image_base.width
-		elif offset < 0:
+		# 入力チェック(ベース用オフセット/水平方向)
+		if horizontal_offset_of_base is None:
+			# 指定がない場合
+			horizontal_offset_of_base = 0
+		elif horizontal_offset_of_base < 0:
 			# 負値が指定されている場合は0に丸める
-			offset = 0
+			horizontal_offset_of_base = 0
 		else:
 			# それ以外は整数に丸める
-			offset = int(offset)
+			horizontal_offset_of_base = int(horizontal_offset_of_base)
 
-		# 結合後の画像サイズ
-		_merged_width: int = 0
-		_merged_height: int = 0
-		if concat_vertically:
-			# 縦方向に結合
-			_merged_width = max(image_base.width, image_to_add.width)
-			_merged_height = max(image_base.height, offset + image_to_add.height)
+		# 入力チェック(ベース用オフセット/垂直方向)
+		if vertical_offset_of_base is None:
+			# 指定がない場合
+			vertical_offset_of_base = 0
+		elif vertical_offset_of_base < 0:
+			# 負値が指定されている場合は0に丸める
+			vertical_offset_of_base = 0
 		else:
-			# 横方向に結合
-			_merged_width = max(image_base.width, offset + image_to_add.width)
-			_merged_height = max(image_base.height, image_to_add.height)
+			# それ以外は整数に丸める
+			vertical_offset_of_base = int(vertical_offset_of_base)
+
+		# 入力チェック(結合用オフセット/水平方向)
+		if horizontal_offset_to_add is None:
+			# 指定がない場合
+			horizontal_offset_to_add = image_base.width + horizontal_offset_of_base
+		else:
+			# それ以外はまず整数に丸める
+			horizontal_offset_to_add = int(horizontal_offset_to_add)
+			if horizontal_offset_to_add < 0:
+				# 負値が指定されている場合は絶対値分ベース用画像のオフセットをずらす
+				horizontal_offset_of_base += abs(horizontal_offset_to_add)
+				# 0に丸める
+				horizontal_offset_to_add = 0
+
+		# 入力チェック(結合用オフセット/垂直方向)
+		if vertical_offset_to_add is None:
+			# 指定がない場合
+			vertical_offset_to_add = image_base.height + vertical_offset_of_base
+		else:
+			# それ以外はまず整数に丸める
+			vertical_offset_to_add = int(vertical_offset_to_add)
+			if vertical_offset_to_add < 0:
+				# 負値が指定されている場合は絶対値分ベース用画像のオフセットをずらす
+				vertical_offset_of_base += abs(vertical_offset_to_add)
+				# 0に丸める
+				vertical_offset_to_add = 0
+
+		# 結合後の画像サイズ算出
+		# 水平方向のサイズ
+		_merged_width: int = max(
+			image_base.width + horizontal_offset_of_base,
+			image_to_add.width + horizontal_offset_to_add
+		)
+
+		# 垂直方向のサイズ
+		_merged_height: int = max(
+			image_base.height + vertical_offset_of_base,
+			image_to_add.height + vertical_offset_to_add
+		)
 
 		# 結合後の画像の入れ物を生成
 		merged_image: Image.Image = Image.new(
@@ -607,50 +651,16 @@ class WebDriverWrapper(object):
 			(_merged_width, _merged_height)
 		)
 
-		# ベース画像の貼り付け位置
-		_horizontal_position_to_paste_base: int = 0
-		_vertical_position_to_paste_base: int = 0
-		# 中央揃えの場合の位置調整
-		if align_center:
-			if concat_vertically:
-				# 縦方向に結合
-				if image_base.width < image_to_add.width:
-					# ベース画像の方を浮かせる場合
-					_horizontal_position_to_paste_base = (image_to_add.width - image_base.width) // 2
-			else:
-				# 横方向に結合
-				if image_base.height < image_to_add.height:
-					# ベース画像の方を浮かせる場合
-					_vertical_position_to_paste_base = (image_to_add.height - image_base.height) // 2
 		# ベース画像の貼り付け
 		merged_image.paste(
 			image_base,
-			(_horizontal_position_to_paste_base, _vertical_position_to_paste_base)
+			(horizontal_offset_of_base, vertical_offset_of_base)
 		)
 
-		# 結合する画像を縦方向か横方向に貼り付け
-		_horizontal_position_to_concat: int = 0
-		_vertical_position_to_concat: int = 0
-		if concat_vertically:
-			# 縦方向に結合
-			if align_center:
-				# 中央揃えの場合の位置調整
-				if image_to_add.width < image_base.width:
-					# 結合する画像の方を浮かせる場合
-					_horizontal_position_to_concat = (image_base.width - image_to_add.width) // 2
-			_vertical_position_to_concat = offset
-		else:
-			# 横方向に結合
-			_horizontal_position_to_concat = offset
-			if align_center:
-				# 中央揃えの場合の位置調整
-				if image_to_add.height < image_base.height:
-					# 結合する画像の方を浮かせる場合
-					_vertical_position_to_concat = (image_base.height - image_to_add.height) // 2
 		# 結合する画像を貼り付け
 		merged_image.paste(
 			image_to_add,
-			(_horizontal_position_to_concat, _vertical_position_to_concat)
+			(horizontal_offset_to_add, vertical_offset_to_add)
 		)
 
 		# 結合後の画像を返却
