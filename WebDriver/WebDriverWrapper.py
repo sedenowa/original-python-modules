@@ -340,7 +340,9 @@ class WebDriverWrapper(object):
 	def save_screen_shot_of_full_screen(
 			self,
 			save_path: str = "screenshot.png",
-			make_directory: bool = True
+			make_directory: bool = True,
+			crop_horizontal_scroll_bar: bool = True,
+			crop_vertical_scroll_bar: bool = True,
 	) -> bool:
 		# ドライバが生成されていなければそのまま終了
 		if self.driver is None:
@@ -368,7 +370,7 @@ class WebDriverWrapper(object):
 
 		# スクロールバーの幅
 		_width_of_horizontal_scroll_bar: int = _inner_height - _client_height
-		_width_of_vertical_scroll_bar: int = _inner_width - _client_width
+		_height_of_vertical_scroll_bar: int = _inner_width - _client_width
 
 		# スクロール回数算出
 		_required_horizontal_scroll_num = (_scroll_width - 1) // _client_width + 1
@@ -383,6 +385,17 @@ class WebDriverWrapper(object):
 
 		# 元となる画像を取得
 		_screenshot_image: Image.Image = self._get_screenshot_image()
+
+		# 要すればスクロールバー分をカット
+		_width_to_crop: int = _inner_width
+		_height_to_crop: int = _inner_height
+		if crop_vertical_scroll_bar:
+			_width_to_crop = _client_width
+		if crop_vertical_scroll_bar:
+			_height_to_crop = _client_height
+		_screenshot_image = _screenshot_image.crop(
+			(0, 0, _width_to_crop, _height_to_crop)
+		)
 
 		# スクロールしながらスクリーンショット結合
 		for _index_horizontal_scroll in range(_required_horizontal_scroll_num):
@@ -413,6 +426,12 @@ class WebDriverWrapper(object):
 					# ループの最後の場合は端数部分のサイズを設定
 					_height_to_crop = _fraction_height
 
+				# 要すればスクロールバー分をカット
+				if crop_vertical_scroll_bar:
+					_width_to_crop -= _width_of_horizontal_scroll_bar
+				if crop_horizontal_scroll_bar:
+					_height_to_crop -= _height_of_vertical_scroll_bar
+
 				# 結合用に使う領域を切り取り
 				_screenshot_image_to_add = _screenshot_image_to_add.crop(
 					(
@@ -427,7 +446,7 @@ class WebDriverWrapper(object):
 				_screenshot_image = self._concat_images(
 					image_base=_screenshot_image,
 					image_to_add=_screenshot_image_to_add,
-					offset=_vertical_scroll_to,
+					# offset=_vertical_scroll_to,
 					concat_vertically=True
 				)
 
