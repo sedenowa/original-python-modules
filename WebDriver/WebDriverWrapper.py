@@ -361,11 +361,102 @@ class WebDriverWrapper(object):
 		# TODO
 
 		return True
+
 	@staticmethod
 	# use Pillow.Image
-	def _comcat_images(image_base: Image, image_to_add: Image) -> Image:
-		# TODO
-		pass
+	def _concat_images(
+			image_base: Image.Image,
+			image_to_add: Image.Image,
+			offset: int = None,
+			concat_vertically: bool = True,
+			align_center: bool = False
+	) -> Image.Image:
+		# 入力チェック(画像)
+		if not isinstance(image_base, Image.Image):
+			return None
+		elif not isinstance(image_to_add, Image.Image):
+			return image_base
+
+		# 入力チェック(結合用オフセット)
+		if offset is None:
+			# 指定がない場合はそのまま並べる
+			if concat_vertically:
+				offset = image_base.height
+			else:
+				offset = image_base.width
+		elif offset < 0:
+			# 負値が指定されている場合は0に丸める
+			offset = 0
+		else:
+			# それ以外は整数に丸める
+			offset = int(offset)
+
+		# 結合後の画像サイズ
+		_merged_width: int = 0
+		_merged_height: int = 0
+		if concat_vertically:
+			# 縦方向に結合
+			_merged_width = max(image_base.width, image_to_add.width)
+			_merged_height = max(image_base.height, offset + image_to_add.height)
+		else:
+			# 横方向に結合
+			_merged_width = max(image_base.width, offset + image_to_add.width)
+			_merged_height = max(image_base.height, image_to_add.height)
+
+		# 結合後の画像の入れ物を生成
+		merged_image: Image.Image = Image.new(
+			"RGB",
+			(_merged_width, _merged_height)
+		)
+
+		# ベース画像の貼り付け位置
+		_horizontal_position_to_paste_base: int = 0
+		_vertical_position_to_paste_base: int = 0
+		# 中央揃えの場合の位置調整
+		if align_center:
+			if concat_vertically:
+				# 縦方向に結合
+				if image_base.width < image_to_add.width:
+					# ベース画像の方を浮かせる場合
+					_horizontal_position_to_paste_base = (image_to_add.width - image_base.width) // 2
+			else:
+				# 横方向に結合
+				if image_base.height < image_to_add.height:
+					# ベース画像の方を浮かせる場合
+					_vertical_position_to_paste_base = (image_to_add.height - image_base.height) // 2
+		# ベース画像の貼り付け
+		merged_image.paste(
+			image_base,
+			(_horizontal_position_to_paste_base, _vertical_position_to_paste_base)
+		)
+
+		# 結合する画像を縦方向か横方向に貼り付け
+		_horizontal_position_to_concat: int = 0
+		_vertical_position_to_concat: int = 0
+		if concat_vertically:
+			# 縦方向に結合
+			if align_center:
+				# 中央揃えの場合の位置調整
+				if image_to_add.width < image_base.width:
+					# 結合する画像の方を浮かせる場合
+					_horizontal_position_to_concat = (image_base.width - image_to_add.width) // 2
+			_vertical_position_to_concat = offset
+		else:
+			# 横方向に結合
+			_horizontal_position_to_concat = offset
+			if align_center:
+				# 中央揃えの場合の位置調整
+				if image_to_add.height < image_base.height:
+					# 結合する画像の方を浮かせる場合
+					_vertical_position_to_concat = (image_base.height - image_to_add.height) // 2
+		# 結合する画像を貼り付け
+		merged_image.paste(
+			image_to_add,
+			(_horizontal_position_to_concat, _vertical_position_to_concat)
+		)
+
+		# 結合後の画像を返却
+		return merged_image
 
 	@staticmethod
 	def __make_directory_if_not_exist(
