@@ -375,8 +375,8 @@ class WebDriverWrapper(object):
 		_required_vertical_scroll_num = (_scroll_height - 1) // _client_height + 1
 
 		# スクロール最後の端数部分のサイズ
-		_fraction_width: int = _scroll_width % _client_width
-		_fraction_height: int = _scroll_height % _client_height
+		_fraction_width: int = (_scroll_width - 1) % _client_width + 1
+		_fraction_height: int = (_scroll_height - 1) % _client_height + 1
 
 		# スクロール原点に移動
 		self.get_driver().execute_script("window.scrollTo(arguments[0], arguments[1]);", 0, 0)
@@ -403,14 +403,33 @@ class WebDriverWrapper(object):
 				# ループ初回以外の場合は追加するスクリーンショットを取得
 				_screenshot_image_to_add: Image.Image = self._get_screenshot_image()
 
+				# 結合用に使う領域のサイズ算出
+				_width_to_crop: int = _client_width
+				_height_to_crop: int = _client_height
+				if _index_horizontal_scroll == _required_horizontal_scroll_num - 1:
+					# ループの最後の場合は端数部分のサイズを設定
+					_width_to_crop = _fraction_width
+				if _index_vertical_scroll == _required_vertical_scroll_num - 1:
+					# ループの最後の場合は端数部分のサイズを設定
+					_height_to_crop = _fraction_height
+
+				# 結合用に使う領域を切り取り
+				_screenshot_image_to_add = _screenshot_image_to_add.crop(
+					(
+						_client_width - _width_to_crop,
+						_client_height - _height_to_crop,
+						_client_width,
+						_client_height
+					)
+				)
+
+				# スクリーンショット結合
 				_screenshot_image = self._concat_images(
 					image_base=_screenshot_image,
 					image_to_add=_screenshot_image_to_add,
 					offset=_vertical_scroll_to,
 					concat_vertically=True
 				)
-
-				a: int = 1
 
 		# スクリーンショット保存
 		_screenshot_image.save(save_path)
