@@ -17,7 +17,7 @@ class LineNotify(object):
 		if isinstance(debug, bool):
 			self.debug: bool = debug
 
-	def set_token(self, token: str):
+	def set_token(self, token: str) -> None:
 		# 入力チェック
 		if not isinstance(token, str):
 			print("Invalid Token.")
@@ -32,19 +32,28 @@ class LineNotify(object):
 	def notify(
 			self,
 			message: str,
+			token: str | None = None,
 			debug: bool = None
 	) -> Response | None:
 		from requests import post
 
+		_token: str = ""
+
 		# 入力チェック
-		# 有効なトークンが設定されているかチェック
-		if not isinstance(self.token, str):
+		if isinstance(token, str) and len(token) > 0:
+			# 引数のトークンを利用
+			_token = token
+		elif isinstance(self.token, str) and len(self.token) > 0:
+			# 引数でトークンの指定がない場合
+			# 有効なトークンが設定されているかチェック
+			# メンバ変数のトークンを利用
+			_token = self.token
+
+		if _token == "":
 			print("Invalid Token.")
 			return
-		elif len(self.token) == 0:
-			print("Empty Token.")
-			return
 
+		# 入力チェック
 		if message == "":
 			print("Empty Message.")
 			return
@@ -53,30 +62,39 @@ class LineNotify(object):
 		if debug is None:
 			debug = self.debug
 
-		if debug:
-			print("header : " + str(self.get_api_header()))
-			print("payload : " + str(self.get_api_payload(message)))
-
-		# リクエスト送信
-		_response: Response = post(
-			url=self.API_URL,
-			headers=self.get_api_header(),
-			params=self.get_api_payload(message)
-		)
+		_url: str = self.__get_api_url()
+		_header: dict | None = self.__get_api_header()
+		_payload: dict | None = self.__get_api_payload(message=message)
 
 		if debug:
-			print("response : " + _response.text)
+			print("header : " + str(self.__get_api_header()))
+			print("payload : " + str(self.__get_api_payload(message=message)))
+
+		_response: Response | None = None
+		if _header is not None and _payload is not None:
+			# リクエスト送信
+			_response = post(
+				url=self.API_URL,
+				headers=self.__get_api_header(),
+				params=self.__get_api_payload(message=message)
+			)
+
+			if debug:
+				print("response : " + _response.text)
+		else:
+			print("Invalid header or payload.")
+			return
 
 		return _response
 
 	# API引数取得用メソッド
 	# APIのURL
 	@classmethod
-	def get_api_url(cls) -> str:
+	def __get_api_url(cls) -> str:
 		return cls.API_URL
 
 	# ヘッダー
-	def get_api_header(self) -> dict | None:
+	def __get_api_header(self) -> dict | None:
 		# 有効なトークンが設定されているかチェック
 		if not isinstance(self.token, str):
 			return
@@ -99,7 +117,7 @@ class LineNotify(object):
 
 	# ペイロード
 	@staticmethod
-	def get_api_payload(message: str) -> dict | None:
+	def __get_api_payload(message: str) -> dict | None:
 		# 入力チェック
 		if not isinstance(message, str):
 			return
