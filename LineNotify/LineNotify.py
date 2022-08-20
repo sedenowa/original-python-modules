@@ -17,6 +17,17 @@ class LineNotify(object):
 		if isinstance(debug, bool):
 			self.debug: bool = debug
 
+	def set_token(self, token: str):
+		# 入力チェック
+		if not isinstance(token, str):
+			print("Invalid Token.")
+			return
+		elif len(token) == 0:
+			print("Empty Token.")
+			return
+
+		self.token = token
+
 	# LINE notify APIを使って通知
 	def notify(
 			self,
@@ -26,13 +37,17 @@ class LineNotify(object):
 		from requests import post
 
 		# 入力チェック
-		if self.token == "":
+		# 有効なトークンが設定されているかチェック
+		if not isinstance(self.token, str):
+			print("Invalid Token.")
+			return
+		elif len(self.token) == 0:
 			print("Empty Token.")
-			return None
+			return
 
 		if message == "":
 			print("Empty Message.")
-			return None
+			return
 
 		# 入力チェック(debug)
 		if debug is None:
@@ -61,7 +76,13 @@ class LineNotify(object):
 		return cls.API_URL
 
 	# ヘッダー
-	def get_api_header(self) -> dict:
+	def get_api_header(self) -> dict | None:
+		# 有効なトークンが設定されているかチェック
+		if not isinstance(self.token, str):
+			return
+		elif len(self.token) == 0:
+			return
+
 		# content type
 		_content_type: str = "application/x-www-form-urlencoded"
 
@@ -78,8 +99,14 @@ class LineNotify(object):
 
 	# ペイロード
 	@staticmethod
-	def get_api_payload(message: str) -> dict:
-		# _payload
+	def get_api_payload(message: str) -> dict | None:
+		# 入力チェック
+		if not isinstance(message, str):
+			return
+		elif len(message) == 0:
+			return
+
+		# payload
 		_payload: dict = {
 			"message": message
 		}
