@@ -125,18 +125,22 @@ class LineNotify(object):
 		return cls.API_URL
 
 	# ヘッダー
-	def __get_api_header(self) -> dict | None:
+	def __get_api_header(
+			self,
+			token: str | None = None
+	) -> dict | None:
+		# トークン取得
+		_token: str = self.__get_api_token(token=token)
+
 		# 有効なトークンが設定されているかチェック
-		if not isinstance(self.token, str):
-			return
-		elif len(self.token) == 0:
+		if len(_token) == 0:
 			return
 
 		# content type
 		_content_type: str = "application/x-www-form-urlencoded"
 
 		# authorization
-		authorization: str = "Bearer" + " " + self.token
+		authorization: str = "Bearer" + " " + _token
 
 		# _header
 		_header: dict = {
