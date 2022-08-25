@@ -37,17 +37,8 @@ class LineNotify(object):
 	) -> Response | None:
 		from requests import post
 
-		_token: str = ""
-
-		# 入力チェック
-		if isinstance(token, str) and len(token) > 0:
-			# 引数のトークンを利用
-			_token = token
-		elif isinstance(self.token, str) and len(self.token) > 0:
-			# 引数でトークンの指定がない場合
-			# 有効なトークンが設定されているかチェック
-			# メンバ変数のトークンを利用
-			_token = self.token
+		# トークン取得
+		_token: str = self.__get_token(token=token)
 
 		if _token == "":
 			print("Invalid Token.")
@@ -86,6 +77,24 @@ class LineNotify(object):
 			return
 
 		return _response
+
+	def __get_token(
+			self,
+			token: str | None = None
+	) -> str:
+		_token: str = ""
+
+		# 入力チェック
+		if isinstance(token, str) and len(token) > 0:
+			# 引数のトークンを利用
+			_token = token
+		elif isinstance(self.token, str) and len(self.token) > 0:
+			# 引数でトークンの指定がない場合
+			# 有効なトークンが設定されているかチェック
+			# メンバ変数のトークンを利用
+			_token = self.token
+
+		return _token
 
 	# API引数取得用メソッド
 	# APIのURL
