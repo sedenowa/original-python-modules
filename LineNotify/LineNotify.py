@@ -96,7 +96,7 @@ class LineNotify(object):
 		return None
 
 	# トークンを入力チェック(引数がなければメンバ変数を返す)
-	def __get_token(
+	def __get_api_token(
 			self,
 			token: str | None = None
 	) -> str:
