@@ -78,6 +78,23 @@ class LineNotify(object):
 
 		return _response
 
+	# 画像送信
+	def send_image(
+			self,
+			image_file_path: str
+	) -> Response | None:
+		# TODO
+		return None
+
+	# スタンプ送信
+	def send_sticker(
+			self,
+			sticker_package_id: int,
+			sticker_id: int
+	) -> Response | None:
+		# TODO
+		return None
+
 	# トークンを入力チェック(引数がなければメンバ変数を返す)
 	def __get_token(
 			self,
@@ -140,3 +157,9 @@ class LineNotify(object):
 		}
 
 		return _payload
+
+	# ファイル
+	@staticmethod
+	def __get_api_file(file_path: str) -> dict | None:
+		# TODO
+		return None
