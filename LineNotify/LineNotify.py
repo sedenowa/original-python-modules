@@ -78,6 +78,7 @@ class LineNotify(object):
 
 		return _response
 
+	# トークンを入力チェック(引数がなければメンバ変数を返す)
 	def __get_token(
 			self,
 			token: str | None = None
