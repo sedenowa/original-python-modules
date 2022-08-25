@@ -47,16 +47,19 @@ class LineNotify(object):
 			print("Empty Message.")
 			return
 
-		# デバッグオンオフ取得
-		_debug: bool = self.__get_debug(debug=debug)
-
 		_url: str = self.__get_api_url()
 		_header: dict | None = self.__get_api_header()
 		_payload: dict | None = self.__get_api_payload(message=message)
 
-		if _debug:
-			print("header : " + str(self.__get_api_header()))
-			print("payload : " + str(self.__get_api_payload(message=message)))
+		# debug
+		self.__print_debug_message(
+			debug_message="header : " + str(self.__get_api_header()),
+			debug=debug
+		)
+		self.__print_debug_message(
+			debug_message="payload : " + str(self.__get_api_payload(message=message)),
+			debug=debug
+		)
 
 		_response: Response | None = None
 		if (_header is not None) and (_payload is not None):
@@ -67,8 +70,11 @@ class LineNotify(object):
 				params=self.__get_api_payload(message=message)
 			)
 
-			if _debug:
-				print("response : " + _response.text)
+			# debug
+			self.__print_debug_message(
+				debug_message="response : " + _response.text,
+				debug=debug
+			)
 		else:
 			print("Invalid header or payload.")
 			return
@@ -199,3 +205,22 @@ class LineNotify(object):
 			_debug = self.debug
 
 		return _debug
+
+	# デバッグ用メッセージ表示
+	def __print_debug_message(
+			self,
+			debug_message: str,
+			debug: bool | None
+	) -> None:
+		# 入力チェック
+		if not isinstance(debug_message, str):
+			return
+		elif len(debug_message) == 0:
+			return
+
+		# デバッグオンオフ取得
+		_debug: bool = self.__get_debug(debug=debug)
+
+		# デバッグ用メッセージ表示処理
+		if _debug:
+			print(debug_message)
