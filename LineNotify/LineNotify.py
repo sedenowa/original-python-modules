@@ -33,12 +33,12 @@ class LineNotify(object):
 			self,
 			message: str,
 			token: str | None = None,
-			debug: bool = None
+			debug: bool | None = None
 	) -> Response | None:
 		from requests import post
 
 		# トークン取得
-		_token: str = self.__get_token(token=token)
+		_token: str = self.__get_api_token(token=token)
 
 		if _token == "":
 			print("Invalid Token.")
@@ -81,7 +81,9 @@ class LineNotify(object):
 	# 画像送信
 	def send_image(
 			self,
-			image_file_path: str
+			message: str,
+			image_file_path: str,
+			debug: bool | None = None
 	) -> Response | None:
 		# TODO
 		return None
@@ -89,8 +91,10 @@ class LineNotify(object):
 	# スタンプ送信
 	def send_sticker(
 			self,
+			message: str,
 			sticker_package_id: int,
-			sticker_id: int
+			sticker_id: int,
+			debug: bool | None = None
 	) -> Response | None:
 		# TODO
 		return None
