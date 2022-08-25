@@ -1,4 +1,5 @@
 from requests import Response
+from requests import post
 
 
 class LineNotify(object):
@@ -29,17 +30,14 @@ class LineNotify(object):
 		self.token = token
 
 	# LINE notify APIを使って通知
-	def notify(
+	def send_message(
 			self,
 			message: str,
 			token: str | None = None,
 			debug: bool | None = None
 	) -> Response | None:
-		from requests import post
-
 		# トークン取得
 		_token: str = self.__get_api_token(token=token)
-
 		if _token == "":
 			print("Invalid Token.")
 			return
