@@ -144,17 +144,34 @@ class LineNotify(object):
 
 	# ペイロード
 	@staticmethod
-	def __get_api_payload(message: str) -> dict | None:
+	def __get_api_payload(
+			message: str,
+			sticker_package_id: int | None = None,
+			sticker_id: int | None = None
+	) -> dict | None:
 		# 入力チェック
 		if not isinstance(message, str):
 			return
 		elif len(message) == 0:
 			return
 
+		if not isinstance(sticker_package_id, int):
+			sticker_package_id = None
+
+		if not isinstance(sticker_id, int):
+			sticker_id = None
+
 		# payload
 		_payload: dict = {
 			"message": message
 		}
+
+		if (sticker_package_id is not None) and (sticker_id is not None):
+			_payload_temp: dict = {
+				"stickerPackageId": sticker_package_id,
+				"stickerId": sticker_id
+			}
+			_payload.update(_payload_temp)
 
 		return _payload
 
