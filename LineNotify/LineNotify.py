@@ -48,16 +48,23 @@ class LineNotify(object):
 			return
 
 		_url: str = self.__get_api_url()
-		_header: dict | None = self.__get_api_header()
-		_payload: dict | None = self.__get_api_payload(message=message)
-
 		# debug
 		self.__print_debug_message(
-			debug_message="header : " + str(self.__get_api_header()),
+			debug_message="url : " + _url,
 			debug=debug
 		)
+
+		_header: dict | None = self.__get_api_header()
+		# debug
 		self.__print_debug_message(
-			debug_message="payload : " + str(self.__get_api_payload(message=message)),
+			debug_message="header : " + str(_header),
+			debug=debug
+		)
+
+		_payload: dict | None = self.__get_api_payload(message=message)
+		# debug
+		self.__print_debug_message(
+			debug_message="payload : " + str(_payload),
 			debug=debug
 		)
 
@@ -69,7 +76,6 @@ class LineNotify(object):
 				headers=self.__get_api_header(),
 				params=self.__get_api_payload(message=message)
 			)
-
 			# debug
 			self.__print_debug_message(
 				debug_message="response : " + _response.text,
